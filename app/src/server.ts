@@ -1,5 +1,6 @@
 import "./lib/error-capture";
 import { applySecurityHeaders } from "./lib/security-headers.server";
+import { base } from "./slava/base";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -41,7 +42,8 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
-    if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+    // The router itself canonicalises the base-path root to "<base>/", so leave that one alone.
+    if (url.pathname.length > 1 && url.pathname.endsWith("/") && url.pathname !== base + "/") {
       url.pathname = url.pathname.replace(/\/+$/, "");
       return applySecurityHeaders(Response.redirect(url.toString(), 301));
     }

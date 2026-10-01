@@ -50,3 +50,15 @@ Redesign: витрачено **45 із максимум 100 Higgsfield credits**
 ## Матеріали
 
 `refs/` містить дизайн-референси. `media-jobs/` містить параметри та результати генерацій без облікових токенів. `tools/` містить інструменти підготовки матеріалів; повторна генерація витрачає кредити.
+
+## GitHub Pages
+
+Публічна статична версія: https://shalomesp11-creator.github.io/bk-slava/ (гілка `gh-pages`). Вона створюється з SSR-збірки prerender-експортом кожного маршруту (`app/export-static.mjs`) з base-path `/bk-slava/`:
+
+```sh
+cd app
+VITE_BASE=/bk-slava/ VITE_SITE_ORIGIN=https://shalomesp11-creator.github.io/bk-slava bun run build
+VITE_BASE=/bk-slava/ VITE_SITE_ORIGIN=https://shalomesp11-creator.github.io/bk-slava node export-static.mjs
+```
+
+Результат — `app/dist-pages/`, його вміст публікується в корені гілки `gh-pages`. Без `VITE_BASE` збірка працює як і раніше з кореня домену.

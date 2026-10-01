@@ -24,6 +24,8 @@ export default defineConfig(({ mode, command }) => {
     command === "serve" && (process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design");
 
   return {
+    // "/" for local/Railway/Workers; "/bk-slava/" for GitHub Pages (see export-static.mjs).
+    base: process.env.VITE_BASE || "/",
     resolve: {
       alias: [{ find: /^@higgsfield-ai\/icons(\/.*)?$/, replacement: QUANTA_ICONS_SHIM }],
     },

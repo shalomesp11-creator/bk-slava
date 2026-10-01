@@ -5,6 +5,7 @@ import { SiteShell } from "../slava/site";
 import appCss from "../styles.css?url";
 import appMeta from "../app-meta.json";
 import { origin } from "../slava/content";
+import { withBase } from "../slava/base";
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -22,12 +23,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-      { rel: "manifest", href: "/site.webmanifest" },
+      { rel: "icon", href: withBase("/favicon.ico") },
+      { rel: "apple-touch-icon", href: withBase("/apple-touch-icon.png") },
+      { rel: "manifest", href: withBase("/site.webmanifest") },
       {
         rel: "preload",
-        href: "/fonts/manrope-cyrillic.woff2",
+        href: withBase("/fonts/manrope-cyrillic.woff2"),
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",
@@ -41,14 +42,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       <span>404</span>
       <h1>Тут ще немає простору.</h1>
       <p>Сторінку не знайдено. Поверніться до головної, щоб продовжити.</p>
-      <a href="/">На головну ↗</a>
+      <a href={withBase("/")}>На головну ↗</a>
     </div>
   ),
   errorComponent: () => (
     <div className="error-page wrap">
       <h1>Сторінка не завантажилась.</h1>
       <p>Спробуйте оновити її або повернутися на головну.</p>
-      <a href="/">На головну ↗</a>
+      <a href={withBase("/")}>На головну ↗</a>
     </div>
   ),
 });

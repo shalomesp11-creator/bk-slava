@@ -10,6 +10,7 @@ import {
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouterState } from "@tanstack/react-router";
 import { services, projects, steps, phone, type Service } from "./content";
+import { base, withBase } from "./base";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
@@ -120,8 +121,8 @@ export function Photo({
   return (
     <img
       className={className}
-      src={"/assets/" + name + ".webp"}
-      srcSet={`/assets/${name}-640.webp 640w, /assets/${name}-1200.webp 1200w, /assets/${name}.webp 1920w`}
+      src={withBase("/assets/" + name + ".webp")}
+      srcSet={`${base}/assets/${name}-640.webp 640w, ${base}/assets/${name}-1200.webp 1200w, ${base}/assets/${name}.webp 1920w`}
       sizes={sizes}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
@@ -134,8 +135,8 @@ export function Photo({
 }
 function Brand() {
   return (
-    <a href="/" className="brand" aria-label="БК Слава, головна">
-      <img src="/assets/logo-144.webp" alt="Логотип ТОВ БК Слава" width="144" height="144" />
+    <a href={withBase("/")} className="brand" aria-label="БК Слава, головна">
+      <img src={withBase("/assets/logo-144.webp")} alt="Логотип ТОВ БК Слава" width="144" height="144" />
       <span>
         БК СЛАВА<small>БУДУЄМО З 2006 РОКУ</small>
       </span>
@@ -402,7 +403,7 @@ function Consultation({
                 />
                 <span>
                   Погоджуюсь на обробку даних згідно з{" "}
-                  <a href="/pryvatnist" target="_blank" rel="noopener noreferrer">
+                  <a href={withBase("/pryvatnist")} target="_blank" rel="noopener noreferrer">
                     політикою приватності
                   </a>
                   .
@@ -459,7 +460,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           {links.map(([url, title]) => (
             <a
               key={url}
-              href={url}
+              href={withBase(url)}
               aria-current={pathname === url || pathname.startsWith(url + "/") ? "page" : undefined}
             >
               {title}
@@ -503,13 +504,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Dialog.Title>БК Слава</Dialog.Title>
             <Dialog.Description>Будівельні та ремонтні роботи з 2006 року.</Dialog.Description>
             <nav aria-label="Мобільна навігація">
-              <a href="/" aria-current={pathname === "/" ? "page" : undefined}>
+              <a href={withBase("/")} aria-current={pathname === "/" ? "page" : undefined}>
                 Головна <Arrow diagonal />
               </a>
               {links.map(([url, title]) => (
                 <a
                   key={url}
-                  href={url}
+                  href={withBase(url)}
                   aria-current={
                     pathname === url || pathname.startsWith(url + "/") ? "page" : undefined
                   }
@@ -538,10 +539,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
             Київ та Київська область.
           </p>
           <div className="footer-links">
-            <a href="/poslugy">Послуги</a>
-            <a href="/portfolio">Наші роботи</a>
-            <a href="/pro-kompaniyu">Про компанію</a>
-            <a href="/kontakty">Контакти</a>
+            <a href={withBase("/poslugy")}>Послуги</a>
+            <a href={withBase("/portfolio")}>Наші роботи</a>
+            <a href={withBase("/pro-kompaniyu")}>Про компанію</a>
+            <a href={withBase("/kontakty")}>Контакти</a>
           </div>
           <div className="footer-contacts">
             <a href="tel:+380676090075">{phone}</a>
@@ -552,7 +553,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} ТОВ БК Слава</span>
           <span>Працюємо з 2006 року</span>
-          <a href="/pryvatnist">Приватність</a>
+          <a href={withBase("/pryvatnist")}>Приватність</a>
         </div>
       </footer>
       <Consultation
@@ -621,8 +622,8 @@ function Intro() {
             muted
             playsInline
             preload="auto"
-            src={mobile ? "/assets/intro-mobile.mp4" : "/assets/intro.mp4"}
-            poster="/assets/intro-poster.jpg"
+            src={withBase(mobile ? "/assets/intro-mobile.mp4" : "/assets/intro.mp4")}
+            poster={withBase("/assets/intro-poster.jpg")}
             onCanPlay={() => setReady(true)}
             onEnded={() => setVisible(false)}
             onError={(e) => {
@@ -687,7 +688,7 @@ export function Home() {
             ТОВ БК Слава працює з 2006 року. Виконуємо ремонтні та будівельні роботи у Києві й
             Київській області, поєднуючи практичні рішення з акуратним виконанням.
           </p>
-          <a className="text-link" href="/pro-kompaniyu">
+          <a className="text-link" href={withBase("/pro-kompaniyu")}>
             Познайомитися з компанією <Arrow diagonal />
           </a>
         </div>
@@ -776,7 +777,7 @@ function WorkCarousel() {
         }}
       >
         {projects.map((p) => (
-          <a href={"/portfolio?project=" + p.id} className="project-link" key={p.id}>
+          <a href={withBase("/portfolio?project=" + p.id)} className="project-link" key={p.id}>
             <div className="image-crop">
               <Photo name={p.image} alt={p.title} />
               <span className="project-open">
@@ -792,7 +793,7 @@ function WorkCarousel() {
       </div>
       <div className="gallery-foot">
         <span>Зображення — архітектурні візуалізації, не фото виконаних об’єктів.</span>
-        <a className="text-link" href="/portfolio">
+        <a className="text-link" href={withBase("/portfolio")}>
           Переглянути всі роботи <Arrow />
         </a>
       </div>
@@ -811,7 +812,7 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
         <div className="service-rows">
           {services.map((s, i) => (
             <a
-              href={"/poslugy/" + s.slug}
+              href={withBase("/poslugy/" + s.slug)}
               key={s.slug}
               onMouseEnter={() => setActive(i)}
               onFocus={() => setActive(i)}
@@ -834,7 +835,7 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
             <span>0{active + 1} / НАПРЯМОК РОБІТ</span>
             <h3>{services[active].name}</h3>
             <p>{services[active].short}</p>
-            <a className="text-link" href={"/poslugy/" + services[active].slug}>
+            <a className="text-link" href={withBase("/poslugy/" + services[active].slug)}>
               Докладніше про послугу <Arrow diagonal />
             </a>
           </div>
@@ -888,11 +889,11 @@ export function ContactBand() {
 function Breadcrumb({ current, service = false }: { current: string; service?: boolean }) {
   return (
     <nav className={`breadcrumb${service ? " breadcrumb-service" : ""}`} aria-label="Шлях сторінки">
-      <a href="/">Головна</a>
+      <a href={withBase("/")}>Головна</a>
       <span>/</span>
       {service && (
         <>
-          <a href="/poslugy">Послуги</a>
+          <a href={withBase("/poslugy")}>Послуги</a>
           <span>/</span>
         </>
       )}
@@ -1020,7 +1021,7 @@ export function ServicePage({ service: s }: { service: Service }) {
           </details>
         </div>
       </section>
-      <a className="next-service wrap" href={"/poslugy/" + next.slug}>
+      <a className="next-service wrap" href={withBase("/poslugy/" + next.slug)}>
         <span>Наступний напрямок</span>
         <h3>{next.name}</h3>
         <Arrow diagonal />
@@ -1207,7 +1208,7 @@ export function About() {
       <section className="about-identity wrap">
         <div className="about-logo">
           <img
-            src="/assets/logo-720.webp"
+            src={withBase("/assets/logo-720.webp")}
             alt="Оригінальний логотип ТОВ БК Слава"
             width="720"
             height="720"
