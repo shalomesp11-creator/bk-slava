@@ -22,11 +22,11 @@
 - [x] Design implementation complete
 - [x] Desktop/mobile screenshots reviewed, functional checks passed
 - [x] Production build and restart localhost:8080
-- [ ] Existing GitHub repo pushed
+- [x] Existing GitHub repo pushed (implementation commit 61cacfd)
 
 ## Preview
 Existing temporary tunnel: https://hat-gbp-transition-entering.trycloudflare.com
 Production server must restart after build (cached server manifest).
 GitHub: https://github.com/shalomesp11-creator/bk-slava
 
-Final production verification: 24 pages, failures []; intro actual 5s in both variants; carousel/cards at 1440/390/320 all pass. External tunnel HTTP200 and includes new CSS and carousel. Production Node session 28056, tunnel from previous work retained. Only pending action: commit/push and mark below complete. Existing limitations unchanged: temporary hosting, Telegram username/backend pending, portfolio visuals are generated examples.
+Final production verification: 24 pages, failures []; intro actual 5s in both variants; carousel/cards at 1440/390/320 all pass. External tunnel HTTP200 and includes new CSS and carousel. Production Node session 28056, tunnel from previous work retained. Redesign complete and pushed. Existing limitations unchanged: temporary hosting, Telegram username/backend pending, portfolio visuals are generated examples.
