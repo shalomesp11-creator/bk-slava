@@ -1,5 +1,5 @@
 export const phone = "+380 67 609 00 75";
-export const origin = "https://bk-slava.higgsfield.app";
+export const origin = import.meta.env.VITE_SITE_ORIGIN || "https://bk-slava.higgsfield.app";
 export const services = [
   {
     slug: "remont-pid-klyuch",

@@ -5,6 +5,7 @@ import { SiteShell } from "../slava/site";
 import appCss from "../styles.css?url";
 import { reportHiggsfieldError } from "../lib/higgsfield-error-reporting";
 import appMeta from "../app-meta.json";
+import { origin } from "../slava/content";
 declare const __HF_DESIGN_INSPECTOR__: boolean;
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "uk_UA" },
       { property: "og:site_name", content: "ТОВ БК Слава" },
-      { property: "og:image", content: appMeta.og_image_url },
+      { property: "og:image", content: origin + "/assets/og.webp" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: origin + "/assets/og.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -56,8 +58,8 @@ const business = {
   "@context": "https://schema.org",
   "@type": "HomeAndConstructionBusiness",
   name: "ТОВ БК Слава",
-  url: "https://bk-slava.higgsfield.app",
-  logo: "https://bk-slava.higgsfield.app/assets/logo.jpg",
+  url: origin,
+  logo: origin + "/assets/logo.jpg",
   telephone: "+380676090075",
   email: "m98720141@gmail.com",
   foundingDate: "2006",
