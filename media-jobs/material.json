@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:14:49.881304Z",
+    "display_name": "GPT Image 2",
+    "id": "345e2c09-e917-4d92-8148-c611c35acd55",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121449_345e2c09-e917-4d92-8148-c611c35acd55_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Macro architectural material photography, intersecting real brushed stainless steel, cast mineral concrete and transparent glass surfaces, deep forest green reflected lighting, controlled natural shadows, luxury construction precision, no neon no text no logos no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121449_345e2c09-e917-4d92-8148-c611c35acd55.png",
+    "status": "completed"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:08:32.826803Z",
+    "display_name": "GPT Image 2",
+    "id": "dd2df039-9f88-402a-8f1c-89660a7fc9a2",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_dd2df039-9f88-402a-8f1c-89660a7fc9a2_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 752,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Website desktop section design reference, Ukrainian construction company BK Slava, architectural editorial art direction, mineral white #F3F5F0, forest green #0D3D06, tiny electric green #1FCE08 accents. Sharp planes, Manrope Cyrillic grotesk, extremely sophisticated generous composition, real architectural photography, no template cards, no glow, no browser chrome, no watermark. White editorial contact composition with giant forest headline: Почнемо з вашого простору. Large telephone typography, small separate WhatsApp Viber Telegram links. Green consultation rectangle aligned lower right.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "1k",
+      "width": 1344
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_dd2df039-9f88-402a-8f1c-89660a7fc9a2.png",
+    "status": "completed"
+  }
+]

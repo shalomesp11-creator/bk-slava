@@ -11,7 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as PryvatnistRouteImport } from './routes/pryvatnist'
+import { Route as ProKompaniyuRouteImport } from './routes/pro-kompaniyu'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PoslugyIndexRouteImport } from './routes/poslugy.index'
+import { Route as PoslugySteliRouteImport } from './routes/poslugy.steli'
+import { Route as PoslugySantehnikaElektrykaRouteImport } from './routes/poslugy.santehnika-elektryka'
+import { Route as PoslugyRemontPidKlyuchRouteImport } from './routes/poslugy.remont-pid-klyuch'
+import { Route as PoslugyOzdoblennyaRouteImport } from './routes/poslugy.ozdoblennya'
+import { Route as PoslugyGipsokartonRouteImport } from './routes/poslugy.gipsokarton'
+import { Route as PoslugyDemontazhRouteImport } from './routes/poslugy.demontazh'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -23,40 +34,183 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PryvatnistRoute = PryvatnistRouteImport.update({
+  id: '/pryvatnist',
+  path: '/pryvatnist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProKompaniyuRoute = ProKompaniyuRouteImport.update({
+  id: '/pro-kompaniyu',
+  path: '/pro-kompaniyu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktyRoute = KontaktyRouteImport.update({
+  id: '/kontakty',
+  path: '/kontakty',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PoslugyIndexRoute = PoslugyIndexRouteImport.update({
+  id: '/poslugy/',
+  path: '/poslugy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoslugySteliRoute = PoslugySteliRouteImport.update({
+  id: '/poslugy/steli',
+  path: '/poslugy/steli',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoslugySantehnikaElektrykaRoute =
+  PoslugySantehnikaElektrykaRouteImport.update({
+    id: '/poslugy/santehnika-elektryka',
+    path: '/poslugy/santehnika-elektryka',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PoslugyRemontPidKlyuchRoute = PoslugyRemontPidKlyuchRouteImport.update({
+  id: '/poslugy/remont-pid-klyuch',
+  path: '/poslugy/remont-pid-klyuch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoslugyOzdoblennyaRoute = PoslugyOzdoblennyaRouteImport.update({
+  id: '/poslugy/ozdoblennya',
+  path: '/poslugy/ozdoblennya',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoslugyGipsokartonRoute = PoslugyGipsokartonRouteImport.update({
+  id: '/poslugy/gipsokarton',
+  path: '/poslugy/gipsokarton',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoslugyDemontazhRoute = PoslugyDemontazhRouteImport.update({
+  id: '/poslugy/demontazh',
+  path: '/poslugy/demontazh',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/kontakty': typeof KontaktyRoute
+  '/portfolio': typeof PortfolioRoute
+  '/pro-kompaniyu': typeof ProKompaniyuRoute
+  '/pryvatnist': typeof PryvatnistRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/poslugy/demontazh': typeof PoslugyDemontazhRoute
+  '/poslugy/gipsokarton': typeof PoslugyGipsokartonRoute
+  '/poslugy/ozdoblennya': typeof PoslugyOzdoblennyaRoute
+  '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
+  '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
+  '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy/': typeof PoslugyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/kontakty': typeof KontaktyRoute
+  '/portfolio': typeof PortfolioRoute
+  '/pro-kompaniyu': typeof ProKompaniyuRoute
+  '/pryvatnist': typeof PryvatnistRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/poslugy/demontazh': typeof PoslugyDemontazhRoute
+  '/poslugy/gipsokarton': typeof PoslugyGipsokartonRoute
+  '/poslugy/ozdoblennya': typeof PoslugyOzdoblennyaRoute
+  '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
+  '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
+  '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy': typeof PoslugyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/kontakty': typeof KontaktyRoute
+  '/portfolio': typeof PortfolioRoute
+  '/pro-kompaniyu': typeof ProKompaniyuRoute
+  '/pryvatnist': typeof PryvatnistRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/poslugy/demontazh': typeof PoslugyDemontazhRoute
+  '/poslugy/gipsokarton': typeof PoslugyGipsokartonRoute
+  '/poslugy/ozdoblennya': typeof PoslugyOzdoblennyaRoute
+  '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
+  '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
+  '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy/': typeof PoslugyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/robots.txt' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/kontakty'
+    | '/portfolio'
+    | '/pro-kompaniyu'
+    | '/pryvatnist'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/poslugy/demontazh'
+    | '/poslugy/gipsokarton'
+    | '/poslugy/ozdoblennya'
+    | '/poslugy/remont-pid-klyuch'
+    | '/poslugy/santehnika-elektryka'
+    | '/poslugy/steli'
+    | '/poslugy/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/robots.txt' | '/sitemap.xml'
-  id: '__root__' | '/' | '/robots.txt' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/kontakty'
+    | '/portfolio'
+    | '/pro-kompaniyu'
+    | '/pryvatnist'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/poslugy/demontazh'
+    | '/poslugy/gipsokarton'
+    | '/poslugy/ozdoblennya'
+    | '/poslugy/remont-pid-klyuch'
+    | '/poslugy/santehnika-elektryka'
+    | '/poslugy/steli'
+    | '/poslugy'
+  id:
+    | '__root__'
+    | '/'
+    | '/kontakty'
+    | '/portfolio'
+    | '/pro-kompaniyu'
+    | '/pryvatnist'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/poslugy/demontazh'
+    | '/poslugy/gipsokarton'
+    | '/poslugy/ozdoblennya'
+    | '/poslugy/remont-pid-klyuch'
+    | '/poslugy/santehnika-elektryka'
+    | '/poslugy/steli'
+    | '/poslugy/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KontaktyRoute: typeof KontaktyRoute
+  PortfolioRoute: typeof PortfolioRoute
+  ProKompaniyuRoute: typeof ProKompaniyuRoute
+  PryvatnistRoute: typeof PryvatnistRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  PoslugyDemontazhRoute: typeof PoslugyDemontazhRoute
+  PoslugyGipsokartonRoute: typeof PoslugyGipsokartonRoute
+  PoslugyOzdoblennyaRoute: typeof PoslugyOzdoblennyaRoute
+  PoslugyRemontPidKlyuchRoute: typeof PoslugyRemontPidKlyuchRoute
+  PoslugySantehnikaElektrykaRoute: typeof PoslugySantehnikaElektrykaRoute
+  PoslugySteliRoute: typeof PoslugySteliRoute
+  PoslugyIndexRoute: typeof PoslugyIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +229,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pryvatnist': {
+      id: '/pryvatnist'
+      path: '/pryvatnist'
+      fullPath: '/pryvatnist'
+      preLoaderRoute: typeof PryvatnistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro-kompaniyu': {
+      id: '/pro-kompaniyu'
+      path: '/pro-kompaniyu'
+      fullPath: '/pro-kompaniyu'
+      preLoaderRoute: typeof ProKompaniyuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakty': {
+      id: '/kontakty'
+      path: '/kontakty'
+      fullPath: '/kontakty'
+      preLoaderRoute: typeof KontaktyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +264,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/poslugy/': {
+      id: '/poslugy/'
+      path: '/poslugy'
+      fullPath: '/poslugy/'
+      preLoaderRoute: typeof PoslugyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/steli': {
+      id: '/poslugy/steli'
+      path: '/poslugy/steli'
+      fullPath: '/poslugy/steli'
+      preLoaderRoute: typeof PoslugySteliRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/santehnika-elektryka': {
+      id: '/poslugy/santehnika-elektryka'
+      path: '/poslugy/santehnika-elektryka'
+      fullPath: '/poslugy/santehnika-elektryka'
+      preLoaderRoute: typeof PoslugySantehnikaElektrykaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/remont-pid-klyuch': {
+      id: '/poslugy/remont-pid-klyuch'
+      path: '/poslugy/remont-pid-klyuch'
+      fullPath: '/poslugy/remont-pid-klyuch'
+      preLoaderRoute: typeof PoslugyRemontPidKlyuchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/ozdoblennya': {
+      id: '/poslugy/ozdoblennya'
+      path: '/poslugy/ozdoblennya'
+      fullPath: '/poslugy/ozdoblennya'
+      preLoaderRoute: typeof PoslugyOzdoblennyaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/gipsokarton': {
+      id: '/poslugy/gipsokarton'
+      path: '/poslugy/gipsokarton'
+      fullPath: '/poslugy/gipsokarton'
+      preLoaderRoute: typeof PoslugyGipsokartonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/poslugy/demontazh': {
+      id: '/poslugy/demontazh'
+      path: '/poslugy/demontazh'
+      fullPath: '/poslugy/demontazh'
+      preLoaderRoute: typeof PoslugyDemontazhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KontaktyRoute: KontaktyRoute,
+  PortfolioRoute: PortfolioRoute,
+  ProKompaniyuRoute: ProKompaniyuRoute,
+  PryvatnistRoute: PryvatnistRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  PoslugyDemontazhRoute: PoslugyDemontazhRoute,
+  PoslugyGipsokartonRoute: PoslugyGipsokartonRoute,
+  PoslugyOzdoblennyaRoute: PoslugyOzdoblennyaRoute,
+  PoslugyRemontPidKlyuchRoute: PoslugyRemontPidKlyuchRoute,
+  PoslugySantehnikaElektrykaRoute: PoslugySantehnikaElektrykaRoute,
+  PoslugySteliRoute: PoslugySteliRoute,
+  PoslugyIndexRoute: PoslugyIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

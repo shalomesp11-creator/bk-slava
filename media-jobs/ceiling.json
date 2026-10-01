@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:14:47.392418Z",
+    "display_name": "GPT Image 2",
+    "id": "d7e6f16e-7515-420c-a054-80eec02db223",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121447_d7e6f16e-7515-420c-a054-80eec02db223_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Professional detailed architectural photograph of bright office with Armstrong acoustic tile suspended ceiling, exact regular ceiling tile grid, straight aligned LED panels, daylight and neutral painted walls, photoreal material imperfections, no people no text no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121447_d7e6f16e-7515-420c-a054-80eec02db223.png",
+    "status": "completed"
+  }
+]

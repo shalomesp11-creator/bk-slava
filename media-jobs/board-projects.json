@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:08:32.880249Z",
+    "display_name": "GPT Image 2",
+    "id": "b18d4a2e-1da9-4c43-8f78-d812bbff7538",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_b18d4a2e-1da9-4c43-8f78-d812bbff7538_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 752,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Website desktop section design reference, Ukrainian construction company BK Slava, architectural editorial art direction, mineral white #F3F5F0, forest green #0D3D06, tiny electric green #1FCE08 accents. Sharp planes, Manrope Cyrillic grotesk, extremely sophisticated generous composition, real architectural photography, no template cards, no glow, no browser chrome, no watermark. Portfolio section, asymmetric staggered two photographic images, modern living room large left and refined office smaller lower right. Text below photos. Headline: Майбутній вигляд вашого простору. Generous mineral margins.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "1k",
+      "width": 1344
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_b18d4a2e-1da9-4c43-8f78-d812bbff7538.png",
+    "status": "completed"
+  }
+]

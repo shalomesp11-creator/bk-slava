@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:14:50.669814Z",
+    "display_name": "GPT Image 2",
+    "id": "95581983-96bf-4098-9afd-a70a339db36c",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121450_95581983-96bf-4098-9afd-a70a339db36c_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Architectural documentary photograph of an unfinished Kyiv apartment living room, raw screed floor, raw plaster walls, exposed ceiling, large three-panel window on right, rectangular room and kitchen opening back left. Shot eye level from doorway with 24mm rectilinear lens, straight verticals, daylight, no people no text no logos no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121450_95581983-96bf-4098-9afd-a70a339db36c.png",
+    "status": "completed"
+  }
+]

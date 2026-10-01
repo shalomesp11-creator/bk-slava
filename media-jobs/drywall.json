@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:13:24.846609Z",
+    "display_name": "GPT Image 2",
+    "id": "4179a413-47aa-4a35-9d48-204aa328d3aa",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121324_4179a413-47aa-4a35-9d48-204aa328d3aa_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Real documentary construction photograph inside Ukrainian apartment, unfinished gypsum board partition and niche, visible metal studs on one side, neatly taped screw lines, clean tools on floor, natural window light, precise perspective, believable construction detail, no people, no text, no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121324_4179a413-47aa-4a35-9d48-204aa328d3aa.png",
+    "status": "completed"
+  }
+]

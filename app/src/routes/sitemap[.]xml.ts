@@ -1,29 +1,3 @@
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/sitemap.xml')({
-  server: {
-    handlers: {
-      GET: async ({ request }) => {
-        const origin = new URL(request.url).origin
-        const today = new Date().toISOString().split('T')[0]
-        const xml = [
-          '<?xml version="1.0" encoding="UTF-8"?>',
-          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-          '  <url>',
-          `    <loc>${origin}/</loc>`,
-          `    <lastmod>${today}</lastmod>`,
-          '    <changefreq>weekly</changefreq>',
-          '    <priority>1.0</priority>',
-          '  </url>',
-          '</urlset>',
-        ].join('\n')
-        return new Response(xml, {
-          headers: {
-            'Content-Type': 'application/xml; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
-          },
-        })
-      },
-    },
-  },
-})
+import {createFileRoute} from '@tanstack/react-router';
+const paths=["/", "/poslugy", "/portfolio", "/pro-kompaniyu", "/kontakty", "/pryvatnist", "/poslugy/remont-pid-klyuch", "/poslugy/demontazh", "/poslugy/gipsokarton", "/poslugy/steli", "/poslugy/ozdoblennya", "/poslugy/santehnika-elektryka"];
+export const Route=createFileRoute('/sitemap.xml')({server:{handlers:{GET:async()=>new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>'<url><loc>https://bk-slava.higgsfield.app'+p+'</loc></url>').join('')+'</urlset>',{headers:{'Content-Type':'application/xml; charset=utf-8'}})}}});

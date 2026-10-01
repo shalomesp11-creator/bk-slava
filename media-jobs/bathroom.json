@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:13:25.117579Z",
+    "display_name": "GPT Image 2",
+    "id": "702e252b-ca3d-41d7-ab0f-84b7d936edb5",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_702e252b-ca3d-41d7-ab0f-84b7d936edb5_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Professional interior photograph of realistic newly renovated apartment bathroom, pale large-format tile, forest green vanity, brushed steel fixtures, realistic plumbing, mirror with subtle warm task light, daylight, no people no text no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_702e252b-ca3d-41d7-ab0f-84b7d936edb5.png",
+    "status": "completed"
+  }
+]

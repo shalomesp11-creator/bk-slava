@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:13:25.080429Z",
+    "display_name": "GPT Image 2",
+    "id": "315307e4-3295-4905-adec-1324f7e86b19",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_315307e4-3295-4905-adec-1324f7e86b19_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "High-end architectural interior photography of a real plausible recently renovated Kyiv apartment living room. Large windows right, pale mineral plaster, oak floor, dark forest green kitchen cabinetry in background, elegant low sofa, daylight, detailed material texture. Wide rectilinear 24mm tilt-shift lens, straight verticals, eye-level, quiet balanced asymmetry. No people, no text, no watermark, no fantastical geometry, no CGI appearance.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_315307e4-3295-4905-adec-1324f7e86b19.png",
+    "status": "completed"
+  }
+]

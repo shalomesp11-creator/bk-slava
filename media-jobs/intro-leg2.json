@@ -1,0 +1,32 @@
+[
+  {
+    "created_at": "2026-10-01T12:33:39.658606Z",
+    "display_name": "Seedance 2.0",
+    "id": "5dd434d0-4084-4ac3-90d5-e22fcb4ced61",
+    "job_type": "seedance_2_0",
+    "min_result_url": null,
+    "params": {
+      "aspect_ratio": "16:9",
+      "bitrate_mode": "standard",
+      "duration": 12,
+      "generate_audio": false,
+      "genre": "auto",
+      "height": 1080,
+      "medias": [],
+      "mode": "std",
+      "model": "seedance_2_0",
+      "multi_prompt": [],
+      "multi_shot_mode": "custom",
+      "multi_shots": false,
+      "prompt": "Premium architecture film, one continuous elegant lateral camera dolly inside a minimalist contemporary building, refined glass partitions and stainless steel construction geometry, mineral white walls, dark emerald green architectural joinery and subtle natural green reflected light. Photoreal precise material details, slow expensive commercial cinematography. No text, no logo, no particles, no cyberpunk, no gaming, no people.",
+      "prompt_language": "en",
+      "reference_elements": [],
+      "resolution": "1080p",
+      "speedramp": "auto",
+      "width": 1920
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_123339_5dd434d0-4084-4ac3-90d5-e22fcb4ced61.mp4",
+    "status": "completed",
+    "thumbnail_url": "https://cdn.higgsfield.ai/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_123339_5dd434d0-4084-4ac3-90d5-e22fcb4ced61_thumbnail.webp"
+  }
+]

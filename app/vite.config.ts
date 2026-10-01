@@ -19,7 +19,7 @@ const QUANTA_ICONS_SHIM = fileURLToPath(
   new URL("./src/lib/quanta-material-icons.ts", import.meta.url),
 );
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const designInspectorEnabled = process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design";
 
   return {
@@ -32,11 +32,11 @@ export default defineConfig(({ mode }) => {
     // server but throw "No such module" in a Worker. Bundle them all in.
     // (node: builtins stay external — nodejs_compat provides them.)
     ssr: {
-      noExternal: true,
+      noExternal: command === "build" ? true : undefined,
       // `cloudflare:workers` is a workerd runtime built-in that exposes the Worker
       // env / bindings (D1 `DB`, R2 `STORAGE`). Like node: builtins it must NOT be
       // bundled; the runtime provides it. (`ssr.external` is typed string[].)
-      external: ["cloudflare:workers"],
+      external: command === "build" ? ["cloudflare:workers"] : true,
     },
     build: {
       // Keep `cloudflare:*` external in the SSR rollup pass too — `noExternal`
@@ -53,9 +53,7 @@ export default defineConfig(({ mode }) => {
           icon: true,
           svgProps: { fill: "currentColor" },
           svgoConfig: {
-            plugins: [
-              { name: "preset-default", params: { overrides: { removeViewBox: false } } },
-            ],
+            plugins: [{ name: "preset-default", params: { overrides: { removeViewBox: false } } }],
           },
         },
       }),

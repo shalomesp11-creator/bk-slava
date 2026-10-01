@@ -1,0 +1,32 @@
+[
+  {
+    "created_at": "2026-10-01T12:33:39.675291Z",
+    "display_name": "Seedance 2.0",
+    "id": "e3709ef8-dd07-4aa2-b45d-421d839e4722",
+    "job_type": "seedance_2_0",
+    "min_result_url": null,
+    "params": {
+      "aspect_ratio": "16:9",
+      "bitrate_mode": "standard",
+      "duration": 12,
+      "generate_audio": false,
+      "genre": "auto",
+      "height": 1080,
+      "medias": [],
+      "mode": "std",
+      "model": "seedance_2_0",
+      "multi_prompt": [],
+      "multi_shot_mode": "custom",
+      "multi_shots": false,
+      "prompt": "Premium cinematic architecture film. Slow camera pullback from macro real brushed metal and cast concrete joints into a symmetrical elegant architectural interior, pale mineral surfaces, glass panels, forest green accent illumination. End looking straight at a pale wall, clear centered composition. Realistic high end construction and materials, calm precise camera. No text, no logos, no neon, no gaming, no particles.",
+      "prompt_language": "en",
+      "reference_elements": [],
+      "resolution": "1080p",
+      "speedramp": "auto",
+      "width": 1920
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_123339_e3709ef8-dd07-4aa2-b45d-421d839e4722.mp4",
+    "status": "completed",
+    "thumbnail_url": "https://cdn.higgsfield.ai/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_123339_e3709ef8-dd07-4aa2-b45d-421d839e4722_thumbnail.webp"
+  }
+]

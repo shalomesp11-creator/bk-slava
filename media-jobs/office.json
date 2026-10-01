@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:13:25.25577Z",
+    "display_name": "GPT Image 2",
+    "id": "c4103a9b-0d2e-47de-951c-54daa1a9a5e1",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_c4103a9b-0d2e-47de-951c-54daa1a9a5e1_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Professional architectural photography of a renovated Ukrainian office, Grilyato ceiling black open-cell grid with precise recessed lights, glass meeting rooms, green fabric chairs, warm light grey floors, plausible joints, real office finishes, no people, no text no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_c4103a9b-0d2e-47de-951c-54daa1a9a5e1.png",
+    "status": "completed"
+  }
+]

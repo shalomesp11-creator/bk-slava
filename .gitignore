@@ -1,1 +1,14 @@
-node_modules
+node_modules/
+app/dist/
+app/.output/
+app/.tanstack/
+app/.vite/
+app/.wrangler/
+*.log
+.env
+.env.*
+!.env.example
+refs/video/
+refs/qa/
+__pycache__/
+media-jobs/intro-source.json

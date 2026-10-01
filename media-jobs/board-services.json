@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:08:33.073763Z",
+    "display_name": "GPT Image 2",
+    "id": "79b2ac1f-c24e-4a30-9d32-62597369a018",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120833_79b2ac1f-c24e-4a30-9d32-62597369a018_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 752,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Website desktop section design reference, Ukrainian construction company BK Slava, architectural editorial art direction, mineral white #F3F5F0, forest green #0D3D06, tiny electric green #1FCE08 accents. Sharp planes, Manrope Cyrillic grotesk, extremely sophisticated generous composition, real architectural photography, no template cards, no glow, no browser chrome, no watermark. A white architectural service directory. Headline Послуги. Six horizontal ruled rows, a large interior image preview breaking into right half. Each row has a number and a Ukrainian renovation service name. Refined green arrows.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "1k",
+      "width": 1344
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120833_79b2ac1f-c24e-4a30-9d32-62597369a018.png",
+    "status": "completed"
+  }
+]

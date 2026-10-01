@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:08:32.868415Z",
+    "display_name": "GPT Image 2",
+    "id": "3e0a58dc-b3ff-45db-9d3d-a67fde119b42",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_3e0a58dc-b3ff-45db-9d3d-a67fde119b42_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 752,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Website desktop section design reference, Ukrainian construction company BK Slava, architectural editorial art direction, mineral white #F3F5F0, forest green #0D3D06, tiny electric green #1FCE08 accents. Sharp planes, Manrope Cyrillic grotesk, extremely sophisticated generous composition, real architectural photography, no template cards, no glow, no browser chrome, no watermark. Image as canvas, bright contemporary minimal apartment fills width. Giant white two-line headline lower left: Простір, у якому хочеться жити. Small forest consultation slab at bottom right. Thin cream header, brand logo space, four navigation links.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "1k",
+      "width": 1344
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_120832_3e0a58dc-b3ff-45db-9d3d-a67fde119b42.png",
+    "status": "completed"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "created_at": "2026-10-01T12:13:25.624026Z",
+    "display_name": "GPT Image 2",
+    "id": "2e15145e-12e6-4876-80f9-ca3cbdb18b17",
+    "job_type": "gpt_image_2",
+    "min_result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_2e15145e-12e6-4876-80f9-ca3cbdb18b17_min.webp",
+    "params": {
+      "aspect_ratio": "16:9",
+      "height": 1520,
+      "medias": [],
+      "model": "videotape-alpha",
+      "prompt": "Professional architectural photography of contemporary private house living and dining room near Kyiv, oak flooring, mineral white walls, dark green joinery, garden through glass doors, restrained furniture, realistic lived-in detail, daylight, straight verticals, no text no logos no watermark.",
+      "quality": "high",
+      "reference_elements": [],
+      "remove_bg": false,
+      "resolution": "2k",
+      "width": 2688
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_121325_2e15145e-12e6-4876-80f9-ca3cbdb18b17.png",
+    "status": "completed"
+  }
+]
