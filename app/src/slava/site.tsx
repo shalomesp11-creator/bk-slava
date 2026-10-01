@@ -84,7 +84,7 @@ export function ConsultationButton({
   const open = useContext(ContactContext);
   return (
     <button
-      className={className}
+      className={`button-primary ${className}`}
       aria-label={className === "header-consult" ? "Записатися на консультацію" : undefined}
       onClick={() => open(service)}
     >
@@ -122,7 +122,7 @@ export function Photo({
 function Brand() {
   return (
     <a href="/" className="brand" aria-label="БК Слава, головна">
-      <img src="/assets/logo.jpg" alt="Логотип ТОВ БК Слава" width="52" height="52" />
+      <img src="/assets/logo-clean.png" alt="Логотип ТОВ БК Слава" width="52" height="52" />
       <span>
         БК СЛАВА<small>БУДУЄМО З 2006 РОКУ</small>
       </span>
@@ -493,18 +493,18 @@ function Intro() {
   useEffect(() => {
     try {
       if (
-        !sessionStorage.getItem("slava-intro-seen") &&
+        !sessionStorage.getItem("slava-intro-v2-seen") &&
         !matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
         setMobile(matchMedia("(max-width: 700px)").matches);
         setVisible(true);
-        sessionStorage.setItem("slava-intro-seen", "1");
+        sessionStorage.setItem("slava-intro-v2-seen", "1");
       }
     } catch {}
   }, []);
   useEffect(() => {
     if (!visible || !ready) return;
-    const timer = setTimeout(() => setVisible(false), 48000);
+    const timer = setTimeout(() => setVisible(false), 7000);
     return () => clearTimeout(timer);
   }, [visible, ready]);
   useEffect(() => {
@@ -524,7 +524,7 @@ function Intro() {
   return (
     <Dialog.Root open={visible} onOpenChange={setVisible}>
       <Dialog.Portal>
-        <Dialog.Content className="intro" aria-describedby={undefined}>
+        <Dialog.Content className="intro" tabIndex={-1} aria-describedby={undefined} onOpenAutoFocus={e => { e.preventDefault(); video.current?.closest<HTMLElement>(".intro")?.focus(); }}>
           <Dialog.Title className="sr-only">Вступне відео БК Слава</Dialog.Title>
           <video
             ref={video}
@@ -540,13 +540,13 @@ function Intro() {
             onError={(e) => {
               if (e.currentTarget.error) setVisible(false);
             }}
-            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / 46)}
+            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 5))}
           ></video>
           <div className="intro-caption">
             <span>ТОВ БК СЛАВА</span>
             <span>АРХІТЕКТУРА ТОЧНОСТІ / З 2006 РОКУ</span>
           </div>
-          <button className="intro-skip" autoFocus onClick={() => setVisible(false)}>
+          <button className="intro-skip" onClick={() => setVisible(false)}>
             Перейти на сайт <Arrow />
           </button>
           <div className="intro-progress" style={{ transform: `scaleX(${progress})` }} />
@@ -577,16 +577,14 @@ export function Home() {
         </div>
         <ConsultationButton className="hero-consult">
           <span>
-            Записатися
-            <br />
-            на консультацію
+            Записатися на консультацію
           </span>
         </ConsultationButton>
         <span className="hero-caption">ЖИТЛОВІ ТА КОМЕРЦІЙНІ ПРОСТОРИ</span>
       </section>
       <section className="year-section wrap">
         <div className="year-number">
-          2006<span>РІК ПОЧАТКУ НАШОЇ РОБОТИ</span>
+          <span className="year-eyebrow">ТОВ БК СЛАВА / НАША ІСТОРІЯ</span><strong>2006<span className="year-dot">.</span></strong><span className="year-baseline">ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <i>↗</i></span>
         </div>
         <div>
           <h2>Досвід, що стає основою.</h2>
@@ -600,44 +598,29 @@ export function Home() {
         </div>
       </section>
       <ServicesDirectory />
-      <section className="selected-work wrap">
-        <div className="section-heading">
-          <h2>
-            Майбутній вигляд
-            <br />
-            вашого простору.
-          </h2>
-          <p>
-            Матеріали, світло та точна геометрія. Візуальні приклади рішень для житла й бізнесу.
-          </p>
-        </div>
-        <div className="selected-grid">
-          {[projects[0], projects[2]].map((p) => (
-            <a href={"/portfolio?project=" + p.id} className="project-link" key={p.id}>
-              <div className="image-crop">
-                <Photo name={p.image} alt={p.title} />
-                <span className="project-open">
-                  <Arrow diagonal />
-                </span>
-              </div>
-              <div className="project-caption">
-                <h3>{p.title}</h3>
-                <span>{p.type}</span>
-              </div>
-            </a>
-          ))}
-        </div>
-        <div className="gallery-foot">
-          <span>Архітектурні візуалізації. Ідеї для вашого об’єкта.</span>
-          <a className="text-link" href="/portfolio">
-            Переглянути всі рішення <Arrow />
-          </a>
-        </div>
-      </section>
+      <WorkCarousel />
       <Process />
       <ContactBand />
     </>
   );
+}
+function WorkCarousel() {
+  const track = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(0);
+  const [atEnd, setAtEnd] = useState(false);
+  const move = (direction: number) => {
+    const el = track.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement;
+    el.scrollBy({ left: direction * (card.offsetWidth + 24), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  };
+  return <section className="selected-work wrap" aria-label="Наші роботи">
+    <div className="work-heading"><div><span className="eyebrow">ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span><h2>Наші роботи<span className="accent-dot">.</span></h2></div>
+    <div className="carousel-controls"><span aria-live="polite">{String(position + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span><button className="round-control previous" onClick={() => move(-1)} disabled={position === 0} aria-label="Попередня робота"><Arrow /></button><button className="round-control" onClick={() => move(1)} disabled={atEnd} aria-label="Наступна робота"><Arrow /></button></div></div>
+    <div ref={track} className="work-track" onScroll={e => { const el=e.currentTarget; const card=el.firstElementChild as HTMLElement; setPosition(Math.round(el.scrollLeft / (card.offsetWidth + 24))); setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8); }}>
+    {projects.map(p => <a href={"/portfolio?project=" + p.id} className="project-link" key={p.id}><div className="image-crop"><Photo name={p.image === "hero" ? "after" : p.image} alt={p.title}/><span className="project-open"><Arrow diagonal /></span></div><div className="project-caption"><h3>{p.title}</h3><span>{p.type}</span></div></a>)}
+    </div><div className="gallery-foot"><span>Зображення — архітектурні візуалізації, не фото виконаних об’єктів.</span><a className="text-link" href="/portfolio">Переглянути всі роботи <Arrow /></a></div>
+  </section>;
 }
 function ServicesDirectory({ full = false }: { full?: boolean }) {
   const [active, setActive] = useState(0);
@@ -669,8 +652,8 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
           ))}
         </div>
         <div className="service-preview">
-          <Photo name={services[active].image} alt={services[active].name} />
-          <span>{services[active].short}</span>
+          <Photo name={active === 0 ? "before" : services[active].image} alt={active === 0 ? "Підготовлений простір перед комплексним ремонтом" : services[active].name} />
+          <div className="preview-description"><span>0{active + 1} / НАПРЯМОК РОБІТ</span><h3>{services[active].name}</h3><p>{services[active].short}</p><a className="text-link" href={"/poslugy/" + services[active].slug}>Докладніше про послугу <Arrow diagonal /></a></div>
         </div>
       </div>
     </section>
@@ -681,7 +664,7 @@ export function Process() {
     <section className="process-section">
       <div className="wrap">
         <h2>
-          Від задуму
+          <span className="eyebrow">ПОСЛІДОВНІСТЬ, ЯКА ДАЄ РЕЗУЛЬТАТ</span>Від задуму
           <br />
           до останньої деталі.
         </h2>
@@ -714,9 +697,7 @@ export function ContactBand() {
       </div>
       <ConsultationButton className="contact-consult">
         <span>
-          Записатися
-          <br />
-          на консультацію
+          Записатися на консультацію
         </span>
       </ConsultationButton>
     </section>
@@ -910,9 +891,7 @@ export function Portfolio() {
       <div className="page-title wrap">
         <Breadcrumb current="Наші роботи" />
         <h1>
-          Простір набуває
-          <br />
-          <span>нового змісту.</span>
+          Наші роботи<span className="accent-dot">.</span>
         </h1>
         <p>
           Добірка архітектурних рішень для різних задач. Фотореалістичні візуалізації показують
@@ -934,8 +913,7 @@ export function Portfolio() {
           ))}
         </div>
         <p className="filter-count" aria-live="polite">
-          {projects.filter((p) => filter === "Усі" || p.category === filter).length} візуальних
-          рішень
+          {projects.filter((p) => filter === "Усі" || p.category === filter).length} робіт у добірці
         </p>
         <div className="portfolio-grid">
           {projects
@@ -984,7 +962,7 @@ export function Portfolio() {
                   <ConsultationButton
                     className="project-consult"
                     service={selected.type}
-                    children="Обговорити подібне рішення"
+                    children="Обговорити ваш проєкт"
                   />
                 </div>
               </>
@@ -1010,7 +988,7 @@ export function About() {
       <section className="about-identity wrap">
         <div className="about-logo">
           <img
-            src="/assets/logo.jpg"
+            src="/assets/logo-clean.png"
             alt="Оригінальний логотип ТОВ БК Слава"
             width="1254"
             height="1254"

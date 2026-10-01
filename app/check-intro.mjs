@@ -8,6 +8,7 @@ for(const width of [1440,390]){
  const media=await page.locator('.intro video').evaluate(v=>({duration:v.duration,width:v.videoWidth,source:v.currentSrc}));
  await page.screenshot({path:'../refs/qa/'+width+'-intro.png'});
  await page.getByRole('button',{name:'Перейти на сайт'}).click();
+ await page.locator('.intro').waitFor({state:'detached'});
  if(await page.locator('.intro').count())throw Error('Skip failed');
  await page.reload({waitUntil:'networkidle'});if(await page.locator('.intro').count())throw Error('Session marker failed');
  console.log(width,media);await ctx.close();

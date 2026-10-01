@@ -1,0 +1,39 @@
+﻿{
+  "created_at": "2026-10-01T13:47:47.074982Z",
+  "display_name": "Seedance 2.0",
+  "id": "d9145ef6-8114-400f-9830-9523e8624faa",
+  "job_type": "seedance_2_0",
+  "min_result_url": null,
+  "params": {
+    "aspect_ratio": "16:9",
+    "bitrate_mode": "standard",
+    "duration": 5,
+    "generate_audio": false,
+    "genre": "auto",
+    "height": 1080,
+    "medias": [
+      {
+        "data": {
+          "id": "5598fb5a-0e1d-44d4-95fa-7902d90d01b8",
+          "type": "media_input",
+          "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/5598fb5a-0e1d-44d4-95fa-7902d90d01b8.png"
+        },
+        "role": "image"
+      }
+    ],
+    "mode": "std",
+    "model": "seedance_2_0",
+    "multi_prompt": [],
+    "multi_shot_mode": "custom",
+    "multi_shots": false,
+    "prompt": "Exactly 5 seconds premium architectural brand reveal for the supplied Ukrainian construction company logo. The logo is the hero from the FIRST FRAME, centered occupying 55 percent frame height, fully visible with generous empty margins. Exact supplied stone and bronze architectural monogram and exact Cyrillic lettering ТОВ БК СЛАВА. A seamless deep forest green architectural studio background, NO black square or panel behind logo. First 2 seconds a few precise solid architectural components slide a tiny distance into their final interlocking logo positions. A restrained soft grazing light reveals stone grain and brushed bronze edges. By second 3 exact complete logo is assembled and perfectly still. Last 2 seconds hold complete exact brand composition, softly lit deep forest green background. Static frontal camera, exquisite restrained commercial motion design. Preserve logo shapes and Cyrillic letters without morphing. No interiors, rooms, corridors, kitchens, sofas, furniture, people, explosions, particles, neon, additional writing, borders or frame.",
+    "prompt_language": "en",
+    "reference_elements": [],
+    "resolution": "1080p",
+    "speedramp": "auto",
+    "width": 1920
+  },
+  "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_134747_d9145ef6-8114-400f-9830-9523e8624faa.mp4",
+  "status": "completed",
+  "thumbnail_url": "https://cdn.higgsfield.ai/user_3BymTLcVAMo2wnDfk1oKzU3NTIz/hf_20261001_134747_d9145ef6-8114-400f-9830-9523e8624faa_thumbnail.webp"
+}

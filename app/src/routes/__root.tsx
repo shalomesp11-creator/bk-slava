@@ -1,12 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { SiteShell } from "../slava/site";
 import appCss from "../styles.css?url";
-import { reportHiggsfieldError } from "../lib/higgsfield-error-reporting";
+import redesignCss from "../redesign.css?url";
 import appMeta from "../app-meta.json";
 import { origin } from "../slava/content";
-declare const __HF_DESIGN_INSPECTOR__: boolean;
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -24,6 +23,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: redesignCss },
       { rel: "icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },
@@ -59,7 +59,7 @@ const business = {
   "@type": "HomeAndConstructionBusiness",
   name: "ТОВ БК Слава",
   url: origin,
-  logo: origin + "/assets/logo.jpg",
+  logo: origin + "/assets/logo-clean.png",
   telephone: "+380676090075",
   email: "m98720141@gmail.com",
   foundingDate: "2006",
@@ -87,12 +87,6 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 function Root() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => {
-    if (__HF_DESIGN_INSPECTOR__)
-      void import("../module/design-inspector/runtime")
-        .then((m) => m.installHiggsfieldDesignInspector())
-        .catch((error) => reportHiggsfieldError(error, { boundary: "design_inspector_import" }));
-  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <SiteShell>
