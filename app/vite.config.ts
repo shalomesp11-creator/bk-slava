@@ -20,7 +20,8 @@ const QUANTA_ICONS_SHIM = fileURLToPath(
 );
 
 export default defineConfig(({ mode, command }) => {
-  const designInspectorEnabled = process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design";
+  const designInspectorEnabled =
+    command === "serve" && (process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design");
 
   return {
     resolve: {

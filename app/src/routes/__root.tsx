@@ -3,7 +3,6 @@ import { Outlet, createRootRouteWithContext, HeadContent, Scripts } from "@tanst
 import { type ReactNode } from "react";
 import { SiteShell } from "../slava/site";
 import appCss from "../styles.css?url";
-import redesignCss from "../redesign.css?url";
 import appMeta from "../app-meta.json";
 import { origin } from "../slava/content";
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -13,7 +12,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: appMeta.og_title },
       { name: "description", content: appMeta.og_description },
-      { name: "theme-color", content: "#0D3D06" },
+      { name: "theme-color", content: "#123c27" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "uk_UA" },
       { property: "og:site_name", content: "ТОВ БК Слава" },
@@ -23,7 +22,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: redesignCss },
       { rel: "icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },

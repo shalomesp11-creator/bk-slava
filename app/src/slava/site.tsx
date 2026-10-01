@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { useRouterState } from "@tanstack/react-router";
 import { services, projects, steps, phone, type Service } from "./content";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
@@ -71,22 +72,32 @@ function ContactIcon({ kind }: { kind: string }) {
     </svg>
   );
 }
-const ContactContext = createContext<(service?: string) => void>(() => {});
+const ContactContext = createContext<(service?: string, focusTarget?: HTMLElement | null) => void>(
+  () => {},
+);
 export function ConsultationButton({
   className = "",
   children = "Записатися на консультацію",
   service,
+  onClick,
+  focusTarget,
 }: {
   className?: string;
   children?: ReactNode;
   service?: string;
+  onClick?: () => void;
+  focusTarget?: HTMLElement | null;
 }) {
   const open = useContext(ContactContext);
   return (
     <button
       className={`button-primary ${className}`}
       aria-label={className === "header-consult" ? "Записатися на консультацію" : undefined}
-      onClick={() => open(service)}
+      type="button"
+      onClick={() => {
+        onClick?.();
+        open(service, focusTarget);
+      }}
     >
       {children}
       <Arrow diagonal />
@@ -98,18 +109,20 @@ export function Photo({
   alt,
   className = "",
   priority = false,
+  sizes = "(max-width: 600px) calc(100vw - 40px), (max-width: 900px) 50vw, 45vw",
 }: {
   name: string;
   alt: string;
   className?: string;
   priority?: boolean;
+  sizes?: string;
 }) {
   return (
     <img
       className={className}
       src={"/assets/" + name + ".webp"}
       srcSet={`/assets/${name}-640.webp 640w, /assets/${name}-1200.webp 1200w, /assets/${name}.webp 1920w`}
-      sizes={className === "full" || priority ? "100vw" : "(max-width: 600px) 100vw, 60vw"}
+      sizes={sizes}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
@@ -122,7 +135,7 @@ export function Photo({
 function Brand() {
   return (
     <a href="/" className="brand" aria-label="БК Слава, головна">
-      <img src="/assets/logo-clean.png" alt="Логотип ТОВ БК Слава" width="52" height="52" />
+      <img src="/assets/logo-144.webp" alt="Логотип ТОВ БК Слава" width="144" height="144" />
       <span>
         БК СЛАВА<small>БУДУЄМО З 2006 РОКУ</small>
       </span>
@@ -199,10 +212,12 @@ function Consultation({
   open,
   onOpenChange,
   service,
+  returnFocus,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   service: string;
+  returnFocus: () => void;
 }) {
   const [values, setValues] = useState({
     name: "",
@@ -213,33 +228,46 @@ function Consultation({
     consent: false,
   });
   const [error, setError] = useState("");
+  const [invalidField, setInvalidField] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
   const [saved, setSaved] = useState(false);
+  const [stored, setStored] = useState(false);
   useEffect(() => {
     if (open) {
       setValues((v) => ({ ...v, service }));
       setSaved(false);
       setError("");
+      setInvalidField("");
     }
   }, [open, service]);
   function submit(e: FormEvent) {
     e.preventDefault();
     const digits = values.phone.replace(/\D/g, "");
+    const reject = (field: string, message: string) => {
+      setInvalidField(field);
+      setError(message);
+      formRef.current?.querySelector<HTMLElement>(`[name="${field}"]`)?.focus();
+    };
     if (!values.name.trim()) {
-      setError("Вкажіть, будь ласка, ваше ім’я.");
+      reject("name", "Вкажіть, будь ласка, ваше ім’я.");
       return;
     }
     if (!/^(380\d{9}|0\d{9})$/.test(digits)) {
-      setError("Вкажіть український номер: +380 та 9 цифр або 0 та 9 цифр.");
+      reject("phone", "Вкажіть український номер: +380 та 9 цифр або 0 та 9 цифр.");
       return;
     }
     if (!values.consent) {
-      setError("Підтвердьте згоду на обробку контактних даних.");
+      reject("consent", "Підтвердьте згоду на обробку контактних даних.");
       return;
     }
     try {
       sessionStorage.setItem("slava-consultation", JSON.stringify(values));
-    } catch {}
+      setStored(true);
+    } catch {
+      setStored(false);
+    }
     setError("");
+    setInvalidField("");
     setSaved(true);
   }
   const emailBody = `Консультація БК Слава\nІм’я: ${values.name}\nТелефон: ${values.phone}\nОб’єкт: ${values.place}\nПослуга: ${values.service}\n${values.message}`;
@@ -247,7 +275,13 @@ function Consultation({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
-        <Dialog.Content className="consult-panel">
+        <Dialog.Content
+          className="consult-panel"
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            returnFocus();
+          }}
+        >
           <Dialog.Close className="close-control" aria-label="Закрити форму">
             <Close />
           </Dialog.Close>
@@ -265,8 +299,9 @@ function Consultation({
               <span className="complete-mark">✓</span>
               <h3>Звернення підготовлено</h3>
               <p>
-                Дані збережено лише у цьому браузері на час сесії. Автоматичне надсилання ще не
-                підключене.
+                {stored
+                  ? "Дані збережено лише у цьому браузері на час сесії. Автоматичне надсилання ще не підключене."
+                  : "Дані доступні лише у відкритій формі. Автоматичне надсилання ще не підключене."}
               </p>
               <a
                 className="email-draft"
@@ -287,13 +322,15 @@ function Consultation({
               </button>
             </div>
           ) : (
-            <form onSubmit={submit} noValidate>
+            <form ref={formRef} onSubmit={submit} noValidate>
               <div className="form-grid">
                 <label>
                   Ваше ім’я *
                   <input
                     autoComplete="given-name"
                     name="name"
+                    aria-invalid={invalidField === "name"}
+                    aria-describedby={invalidField === "name" ? "consultation-error" : undefined}
                     value={values.name}
                     onChange={(e) => setValues({ ...values, name: e.target.value })}
                     placeholder="Як до вас звертатися"
@@ -308,6 +345,8 @@ function Consultation({
                     inputMode="tel"
                     autoComplete="tel"
                     name="phone"
+                    aria-invalid={invalidField === "phone"}
+                    aria-describedby={invalidField === "phone" ? "consultation-error" : undefined}
                     value={values.phone}
                     onChange={(e) => setValues({ ...values, phone: e.target.value })}
                     placeholder="+380 __ ___ __ __"
@@ -354,6 +393,10 @@ function Consultation({
               <label className="consent">
                 <input
                   type="checkbox"
+                  name="consent"
+                  required
+                  aria-invalid={invalidField === "consent"}
+                  aria-describedby={invalidField === "consent" ? "consultation-error" : undefined}
                   checked={values.consent}
                   onChange={(e) => setValues({ ...values, consent: e.target.checked })}
                 />
@@ -366,7 +409,7 @@ function Consultation({
                 </span>
               </label>
               {error && (
-                <p className="form-error" role="alert">
+                <p id="consultation-error" className="form-error" role="alert">
                   {error}
                 </p>
               )}
@@ -384,6 +427,9 @@ function Consultation({
   );
 }
 export function SiteShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const opener = useRef<HTMLElement | null>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [service, setService] = useState("");
   const [menu, setMenu] = useState(false);
@@ -395,7 +441,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
   ];
   return (
     <ContactContext.Provider
-      value={(s) => {
+      value={(s, focusTarget) => {
+        const active = document.activeElement as HTMLElement;
+        opener.current =
+          focusTarget || (active.closest(".mobile-menu") ? menuTrigger.current : active);
         setService(s || "");
         setMenu(false);
         setOpen(true);
@@ -408,7 +457,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <Brand />
         <nav className="desktop-nav" aria-label="Основна навігація">
           {links.map(([url, title]) => (
-            <a key={url} href={url}>
+            <a
+              key={url}
+              href={url}
+              aria-current={pathname === url || pathname.startsWith(url + "/") ? "page" : undefined}
+            >
               {title}
             </a>
           ))}
@@ -420,7 +473,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <ConsultationButton className="header-consult">
             <span>Консультація</span>
           </ConsultationButton>
-          <button className="menu-toggle" onClick={() => setMenu(true)} aria-label="Відкрити меню">
+          <button
+            ref={menuTrigger}
+            className="menu-toggle"
+            onClick={() => setMenu(true)}
+            aria-label="Відкрити меню"
+            aria-expanded={menu}
+            aria-controls="mobile-navigation"
+          >
             <span />
             <span />
           </button>
@@ -429,18 +489,31 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <Dialog.Root open={menu} onOpenChange={setMenu}>
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <Dialog.Content className="mobile-menu">
+          <Dialog.Content
+            id="mobile-navigation"
+            className="mobile-menu"
+            onCloseAutoFocus={(e) => {
+              e.preventDefault();
+              if (!open) menuTrigger.current?.focus();
+            }}
+          >
             <Dialog.Close className="close-control" aria-label="Закрити меню">
               <Close />
             </Dialog.Close>
             <Dialog.Title>БК Слава</Dialog.Title>
             <Dialog.Description>Будівельні та ремонтні роботи з 2006 року.</Dialog.Description>
             <nav aria-label="Мобільна навігація">
-              <a href="/">
+              <a href="/" aria-current={pathname === "/" ? "page" : undefined}>
                 Головна <Arrow diagonal />
               </a>
               {links.map(([url, title]) => (
-                <a key={url} href={url}>
+                <a
+                  key={url}
+                  href={url}
+                  aria-current={
+                    pathname === url || pathname.startsWith(url + "/") ? "page" : undefined
+                  }
+                >
                   {title}
                   <Arrow diagonal />
                 </a>
@@ -451,7 +524,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      <main id="main">{children}</main>
+      <main id="main" tabIndex={-1}>
+        {children}
+      </main>
       <footer className="site-footer">
         <div className="footer-main">
           <Brand />
@@ -480,7 +555,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <a href="/pryvatnist">Приватність</a>
         </div>
       </footer>
-      <Consultation open={open} onOpenChange={setOpen} service={service} />
+      <Consultation
+        open={open}
+        onOpenChange={setOpen}
+        service={service}
+        returnFocus={() => {
+          const target = opener.current;
+          if (target?.isConnected) target.focus();
+          else {
+            const fallback = document.querySelector<HTMLElement>(".header-consult");
+            if (fallback?.getClientRects().length) fallback.focus();
+            else menuTrigger.current?.focus();
+          }
+        }}
+      />
     </ContactContext.Provider>
   );
 }
@@ -500,31 +588,31 @@ function Intro() {
         setVisible(true);
         sessionStorage.setItem("slava-intro-v2-seen", "1");
       }
-    } catch {}
+    } catch {
+      // Browsers with session storage disabled can still use the main site.
+    }
   }, []);
   useEffect(() => {
-    if (!visible || !ready) return;
+    if (!visible) return;
     const timer = setTimeout(() => setVisible(false), 7000);
     return () => clearTimeout(timer);
-  }, [visible, ready]);
-  useEffect(() => {
-    if (!visible) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setVisible(false);
-    };
-    document.addEventListener("keydown", key);
-    return () => {
-      document.body.style.overflow = prev;
-      document.removeEventListener("keydown", key);
-    };
   }, [visible]);
-  if (!visible) return null;
   return (
     <Dialog.Root open={visible} onOpenChange={setVisible}>
       <Dialog.Portal>
-        <Dialog.Content className="intro" tabIndex={-1} aria-describedby={undefined} onOpenAutoFocus={e => { e.preventDefault(); video.current?.closest<HTMLElement>(".intro")?.focus(); }}>
+        <Dialog.Content
+          className="intro"
+          tabIndex={-1}
+          aria-describedby={undefined}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            document.getElementById("main")?.focus({ preventScroll: true });
+          }}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            video.current?.closest<HTMLElement>(".intro")?.focus();
+          }}
+        >
           <Dialog.Title className="sr-only">Вступне відео БК Слава</Dialog.Title>
           <video
             ref={video}
@@ -540,7 +628,9 @@ function Intro() {
             onError={(e) => {
               if (e.currentTarget.error) setVisible(false);
             }}
-            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 5))}
+            onTimeUpdate={(e) =>
+              setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 5))
+            }
           ></video>
           <div className="intro-caption">
             <span>ТОВ БК СЛАВА</span>
@@ -564,6 +654,7 @@ export function Home() {
           name="hero"
           alt="Світла вітальня з природними матеріалами та зеленою кухнею"
           priority
+          sizes="100vw"
         />
         <div className="hero-shade" />
         <div className="hero-content">
@@ -576,15 +667,19 @@ export function Home() {
           <p>Ремонт і будівельні роботи з увагою до кожної деталі.</p>
         </div>
         <ConsultationButton className="hero-consult">
-          <span>
-            Записатися на консультацію
-          </span>
+          <span>Записатися на консультацію</span>
         </ConsultationButton>
         <span className="hero-caption">ЖИТЛОВІ ТА КОМЕРЦІЙНІ ПРОСТОРИ</span>
       </section>
       <section className="year-section wrap">
         <div className="year-number">
-          <span className="year-eyebrow">ТОВ БК СЛАВА / НАША ІСТОРІЯ</span><strong>2006<span className="year-dot">.</span></strong><span className="year-baseline">ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <i>↗</i></span>
+          <span className="year-eyebrow">ТОВ БК СЛАВА / НАША ІСТОРІЯ</span>
+          <strong>
+            2006<span className="year-dot">.</span>
+          </strong>
+          <span className="year-baseline">
+            ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <i>↗</i>
+          </span>
         </div>
         <div>
           <h2>Досвід, що стає основою.</h2>
@@ -608,19 +703,101 @@ function WorkCarousel() {
   const track = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(0);
   const [atEnd, setAtEnd] = useState(false);
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const update = () => {
+      const card = el.firstElementChild as HTMLElement;
+      const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+      setPosition(Math.round(el.scrollLeft / (card.offsetWidth + gap)));
+      setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    el.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("scroll", update);
+    };
+  }, []);
   const move = (direction: number) => {
     const el = track.current;
     if (!el) return;
     const card = el.firstElementChild as HTMLElement;
-    el.scrollBy({ left: direction * (card.offsetWidth + 24), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    el.scrollBy({
+      left: direction * (card.offsetWidth + (parseFloat(getComputedStyle(el).columnGap) || 0)),
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
   };
-  return <section className="selected-work wrap" aria-label="Наші роботи">
-    <div className="work-heading"><div><span className="eyebrow">ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span><h2>Наші роботи<span className="accent-dot">.</span></h2></div>
-    <div className="carousel-controls"><span aria-live="polite">{String(position + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span><button className="round-control previous" onClick={() => move(-1)} disabled={position === 0} aria-label="Попередня робота"><Arrow /></button><button className="round-control" onClick={() => move(1)} disabled={atEnd} aria-label="Наступна робота"><Arrow /></button></div></div>
-    <div ref={track} className="work-track" onScroll={e => { const el=e.currentTarget; const card=el.firstElementChild as HTMLElement; setPosition(Math.round(el.scrollLeft / (card.offsetWidth + 24))); setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8); }}>
-    {projects.map(p => <a href={"/portfolio?project=" + p.id} className="project-link" key={p.id}><div className="image-crop"><Photo name={p.image === "hero" ? "after" : p.image} alt={p.title}/><span className="project-open"><Arrow diagonal /></span></div><div className="project-caption"><h3>{p.title}</h3><span>{p.type}</span></div></a>)}
-    </div><div className="gallery-foot"><span>Зображення — архітектурні візуалізації, не фото виконаних об’єктів.</span><a className="text-link" href="/portfolio">Переглянути всі роботи <Arrow /></a></div>
-  </section>;
+  return (
+    <section className="selected-work wrap" aria-label="Наші роботи">
+      <div className="work-heading">
+        <div>
+          <span className="eyebrow">ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span>
+          <h2>
+            Наші роботи<span className="accent-dot">.</span>
+          </h2>
+        </div>
+        <div className="carousel-controls">
+          <span aria-live="polite">
+            {String(position + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+          </span>
+          <button
+            className="round-control previous"
+            onClick={() => move(-1)}
+            disabled={position === 0}
+            aria-label="Попередня робота"
+          >
+            <Arrow />
+          </button>
+          <button
+            className="round-control"
+            onClick={() => move(1)}
+            disabled={atEnd}
+            aria-label="Наступна робота"
+          >
+            <Arrow />
+          </button>
+        </div>
+      </div>
+      <div
+        ref={track}
+        className="work-track"
+        tabIndex={0}
+        role="group"
+        aria-label="Карусель робіт"
+        onKeyDown={(e) => {
+          if (e.target !== e.currentTarget) return;
+          if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+            e.preventDefault();
+            move(e.key === "ArrowRight" ? 1 : -1);
+          }
+        }}
+      >
+        {projects.map((p) => (
+          <a href={"/portfolio?project=" + p.id} className="project-link" key={p.id}>
+            <div className="image-crop">
+              <Photo name={p.image} alt={p.title} />
+              <span className="project-open">
+                <Arrow diagonal />
+              </span>
+            </div>
+            <div className="project-caption">
+              <h3>{p.title}</h3>
+              <span>{p.type}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div className="gallery-foot">
+        <span>Зображення — архітектурні візуалізації, не фото виконаних об’єктів.</span>
+        <a className="text-link" href="/portfolio">
+          Переглянути всі роботи <Arrow />
+        </a>
+      </div>
+    </section>
+  );
 }
 function ServicesDirectory({ full = false }: { full?: boolean }) {
   const [active, setActive] = useState(0);
@@ -653,7 +830,14 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
         </div>
         <div className="service-preview">
           <Photo name={services[active].image} alt={services[active].name} />
-          <div className="preview-description"><span>0{active + 1} / НАПРЯМОК РОБІТ</span><h3>{services[active].name}</h3><p>{services[active].short}</p><a className="text-link" href={"/poslugy/" + services[active].slug}>Докладніше про послугу <Arrow diagonal /></a></div>
+          <div className="preview-description">
+            <span>0{active + 1} / НАПРЯМОК РОБІТ</span>
+            <h3>{services[active].name}</h3>
+            <p>{services[active].short}</p>
+            <a className="text-link" href={"/poslugy/" + services[active].slug}>
+              Докладніше про послугу <Arrow diagonal />
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -696,16 +880,14 @@ export function ContactBand() {
         <ContactMethods />
       </div>
       <ConsultationButton className="contact-consult">
-        <span>
-          Записатися на консультацію
-        </span>
+        <span>Записатися на консультацію</span>
       </ConsultationButton>
     </section>
   );
 }
 function Breadcrumb({ current, service = false }: { current: string; service?: boolean }) {
   return (
-    <nav className="breadcrumb" aria-label="Шлях сторінки">
+    <nav className={`breadcrumb${service ? " breadcrumb-service" : ""}`} aria-label="Шлях сторінки">
       <a href="/">Головна</a>
       <span>/</span>
       {service && (
@@ -734,7 +916,12 @@ export function ServicesPage() {
         </p>
       </div>
       <div className="page-banner wrap">
-        <Photo name="house" alt="Сучасний житловий простір із натуральними матеріалами" priority />
+        <Photo
+          name="house"
+          alt="Сучасний житловий простір із натуральними матеріалами"
+          priority
+          sizes="100vw"
+        />
       </div>
       <ServicesDirectory full />
       <Process />
@@ -847,9 +1034,9 @@ function BeforeAfter() {
   return (
     <div className="comparison">
       <div className="compare-images">
-        <Photo name="after" alt="Візуалізація цього приміщення після ремонту" />
+        <Photo name="after" alt="Візуалізація цього приміщення після ремонту" sizes="100vw" />
         <div className="compare-before" style={{ clipPath: `inset(0 ${100 - value}% 0 0)` }}>
-          <Photo name="before" alt="Приміщення з чорновими поверхнями до ремонту" />
+          <Photo name="before" alt="Приміщення з чорновими поверхнями до ремонту" sizes="100vw" />
         </div>
         <span className="compare-tag before">До</span>
         <span className="compare-tag after">Після</span>
@@ -863,6 +1050,7 @@ function BeforeAfter() {
           value={value}
           onChange={(e) => setValue(Number(e.target.value))}
           aria-label="Порівняти вигляд до та після ремонту"
+          aria-valuetext={`${value}% до ремонту, ${100 - value}% після ремонту`}
         />
       </div>
       <p>
@@ -875,6 +1063,8 @@ function BeforeAfter() {
 export function Portfolio() {
   const [filter, setFilter] = useState("Усі");
   const [selected, setSelected] = useState<(typeof projects)[number] | null>(null);
+  const projectOpener = useRef<HTMLElement | null>(null);
+  const handoff = useRef(false);
   useEffect(() => {
     const id = new URLSearchParams(location.search).get("project");
     if (id) setSelected(projects.find((p) => p.id === id) || null);
@@ -919,7 +1109,15 @@ export function Portfolio() {
           {projects
             .filter((p) => filter === "Усі" || p.category === filter)
             .map((p) => (
-              <button className="portfolio-project" onClick={() => setSelected(p)} key={p.id}>
+              <button
+                className="portfolio-project"
+                onClick={(e) => {
+                  projectOpener.current = e.currentTarget;
+                  handoff.current = false;
+                  setSelected(p);
+                }}
+                key={p.id}
+              >
                 <div className="image-crop">
                   <Photo name={p.image} alt={p.title} />
                   <span className="project-open">
@@ -948,20 +1146,41 @@ export function Portfolio() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <Dialog.Content className="project-dialog">
+          <Dialog.Content
+            className="project-dialog"
+            onCloseAutoFocus={(e) => {
+              e.preventDefault();
+              if (!handoff.current) {
+                const target =
+                  projectOpener.current ||
+                  document.querySelector<HTMLElement>(".portfolio-filters button");
+                target?.focus({ preventScroll: true });
+              }
+            }}
+          >
             <Dialog.Close className="close-control" aria-label="Закрити проєкт">
               <Close />
             </Dialog.Close>
             {selected && (
               <>
-                <Photo name={selected.image} alt={selected.title} />
+                <Photo
+                  name={selected.image}
+                  alt={selected.title}
+                  priority
+                  sizes="(max-width: 1200px) 90vw, 1080px"
+                />
                 <div className="project-dialog-text">
                   <span>{selected.type} / ВІЗУАЛІЗАЦІЯ</span>
                   <Dialog.Title>{selected.title}</Dialog.Title>
                   <Dialog.Description>{selected.text}</Dialog.Description>
                   <ConsultationButton
                     className="project-consult"
-                    service={selected.type}
+                    service={services.find((s) => s.slug === selected.service)?.name}
+                    focusTarget={projectOpener.current}
+                    onClick={() => {
+                      handoff.current = true;
+                      setSelected(null);
+                    }}
                     children="Обговорити ваш проєкт"
                   />
                 </div>
@@ -988,10 +1207,11 @@ export function About() {
       <section className="about-identity wrap">
         <div className="about-logo">
           <img
-            src="/assets/logo-clean.png"
+            src="/assets/logo-720.webp"
             alt="Оригінальний логотип ТОВ БК Слава"
-            width="1254"
-            height="1254"
+            width="720"
+            height="720"
+            loading="lazy"
           />
         </div>
         <div>

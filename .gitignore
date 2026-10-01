@@ -10,5 +10,7 @@ app/.wrangler/
 !.env.example
 refs/video/
 refs/qa/
+refs/audit-before/
+refs/audit-after/
 __pycache__/
 media-jobs/intro-source.json

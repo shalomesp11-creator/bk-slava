@@ -149,14 +149,16 @@ export type Service = (typeof services)[number];
 export const projects = [
   {
     id: "svitla-kvartyra",
+    service: "remont-pid-klyuch",
     title: "Світло та спокій",
     type: "Ремонт під ключ",
     category: "Житлові простори",
-    image: "hero",
+    image: "after",
     text: "Концепція квартири з відкритою вітальнею, природними фактурами й глибоким зеленим акцентом. Приклад того, як геометрія, оздоблення та світло працюють разом.",
   },
   {
     id: "zamiskyi-dim",
+    service: "ozdoblennya",
     title: "Будинок із характером",
     type: "Оздоблювальні роботи",
     category: "Житлові простори",
@@ -165,6 +167,7 @@ export const projects = [
   },
   {
     id: "suchasnyi-ofis",
+    service: "steli",
     title: "Простір для рішень",
     type: "Стелі Grilyato",
     category: "Комерційні простори",
@@ -173,6 +176,7 @@ export const projects = [
   },
   {
     id: "vanna-kimnata",
+    service: "santehnika-elektryka",
     title: "Комфорт у деталях",
     type: "Сантехніка та оздоблення",
     category: "Оздоблення",
@@ -181,6 +185,7 @@ export const projects = [
   },
   {
     id: "gipsokarton-protses",
+    service: "gipsokarton",
     title: "Основа нової геометрії",
     type: "Гіпсокартонні конструкції",
     category: "Підготовка та монтаж",
@@ -189,6 +194,7 @@ export const projects = [
   },
   {
     id: "armstrong-ofis",
+    service: "steli",
     title: "Чіткий ритм стелі",
     type: "Стелі Armstrong",
     category: "Комерційні простори",
