@@ -11,6 +11,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useRouterState } from "@tanstack/react-router";
 import { services, projects, steps, phone, type Service } from "./content";
 import { base, withBase } from "./base";
+import { reviewDrafts } from "./review-drafts";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
@@ -136,7 +137,12 @@ export function Photo({
 function Brand() {
   return (
     <a href={withBase("/")} className="brand" aria-label="БК Слава, головна">
-      <img src={withBase("/assets/logo-144.webp")} alt="Логотип ТОВ БК Слава" width="144" height="144" />
+      <img
+        src={withBase("/assets/logo-144.webp")}
+        alt="Логотип ТОВ БК Слава"
+        width="144"
+        height="144"
+      />
       <span>
         БК СЛАВА<small>БУДУЄМО З 2006 РОКУ</small>
       </span>
@@ -683,7 +689,7 @@ export function Home() {
           </span>
         </div>
         <div>
-          <h2>Досвід, що стає основою.</h2>
+          <h2>20 років досвіду, що стає основою.</h2>
           <p>
             ТОВ БК Слава працює з 2006 року. Виконуємо ремонтні та будівельні роботи у Києві й
             Київській області, поєднуючи практичні рішення з акуратним виконанням.
@@ -696,6 +702,7 @@ export function Home() {
       <ServicesDirectory />
       <WorkCarousel />
       <Process />
+      <Reviews />
       <ContactBand />
     </>
   );
@@ -735,7 +742,7 @@ function WorkCarousel() {
     <section className="selected-work wrap" aria-label="Наші роботи">
       <div className="work-heading">
         <div>
-          <span className="eyebrow">ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span>
+          <span className="eyebrow">НАШІ РОБОТИ / ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span>
           <h2>
             Наші роботи<span className="accent-dot">.</span>
           </h2>
@@ -792,9 +799,9 @@ function WorkCarousel() {
         ))}
       </div>
       <div className="gallery-foot">
-        <span>Зображення — архітектурні візуалізації, не фото виконаних об’єктів.</span>
+        <span>Добірка напрямків наших робіт. Зображення — архітектурні візуалізації.</span>
         <a className="text-link" href={withBase("/portfolio")}>
-          Переглянути всі роботи <Arrow />
+          Усі наші роботи <Arrow />
         </a>
       </div>
     </section>
@@ -844,13 +851,49 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
     </section>
   );
 }
+function Reviews() {
+  const cards = (items: typeof reviewDrafts) =>
+    items.map((review) => (
+      <figure className="review-card" key={review.name + review.place}>
+        <span className="review-quote" aria-hidden="true">
+          “
+        </span>
+        <blockquote>{review.text}</blockquote>
+        <figcaption>
+          <span className="review-name">{review.name}</span>
+          <span className="review-place">{review.place}</span>
+        </figcaption>
+      </figure>
+    ));
+  return (
+    <section className="reviews-section wrap" aria-labelledby="reviews-heading">
+      <div className="section-heading">
+        <div>
+          <span className="eyebrow">ДОСВІД СПІВПРАЦІ</span>
+          <h2 id="reviews-heading">
+            Відгуки<span className="accent-dot">.</span>
+          </h2>
+        </div>
+        <p className="reviews-note">
+          Підготовлені тексти для погодження компанією; відгуки ще не підтверджені.
+        </p>
+      </div>
+      <div className="reviews-grid">{cards(reviewDrafts.slice(0, 3))}</div>
+      <details className="reviews-more">
+        <summary>
+          Усі відгуки ({reviewDrafts.length})<span aria-hidden="true">+</span>
+        </summary>
+        <div className="reviews-grid">{cards(reviewDrafts.slice(3))}</div>
+      </details>
+    </section>
+  );
+}
 export function Process() {
   return (
     <section className="process-section">
       <div className="wrap">
         <h2>
-          <span className="eyebrow">ПОСЛІДОВНІСТЬ, ЯКА ДАЄ РЕЗУЛЬТАТ</span>Від задуму
-          <br />
+          <span className="eyebrow">ПОСЛІДОВНІСТЬ, ЯКА ДАЄ РЕЗУЛЬТАТ</span>Від задуму <br />
           до останньої деталі.
         </h2>
         <div className="process-grid">
@@ -1085,9 +1128,9 @@ export function Portfolio() {
           Наші роботи<span className="accent-dot">.</span>
         </h1>
         <p>
-          Добірка архітектурних рішень для різних задач. Фотореалістичні візуалізації показують
-          характер матеріалів і можливий результат; вони не є фотографіями виконаних об’єктів
-          компанії.
+          Добірка напрямків наших робіт для житлових і комерційних просторів. Архітектурні
+          візуалізації показують характер матеріалів і можливий результат; вони не є фотографіями
+          виконаних об’єктів компанії.
         </p>
       </div>
       <section className="portfolio-section wrap">
