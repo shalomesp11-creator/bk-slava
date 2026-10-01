@@ -652,7 +652,7 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
           ))}
         </div>
         <div className="service-preview">
-          <Photo name={active === 0 ? "before" : services[active].image} alt={active === 0 ? "Підготовлений простір перед комплексним ремонтом" : services[active].name} />
+          <Photo name={services[active].image} alt={services[active].name} />
           <div className="preview-description"><span>0{active + 1} / НАПРЯМОК РОБІТ</span><h3>{services[active].name}</h3><p>{services[active].short}</p><a className="text-link" href={"/poslugy/" + services[active].slug}>Докладніше про послугу <Arrow diagonal /></a></div>
         </div>
       </div>
