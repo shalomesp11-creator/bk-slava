@@ -487,6 +487,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 function Intro() {
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const [progress, setProgress] = useState(0);
   const video = useRef<HTMLVideoElement>(null);
   useEffect(() => {
@@ -495,16 +496,17 @@ function Intro() {
         !sessionStorage.getItem("slava-intro-seen") &&
         !matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
+        setMobile(matchMedia("(max-width: 700px)").matches);
         setVisible(true);
         sessionStorage.setItem("slava-intro-seen", "1");
       }
     } catch {}
   }, []);
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || !ready) return;
     const timer = setTimeout(() => setVisible(false), 48000);
     return () => clearTimeout(timer);
-  }, [visible]);
+  }, [visible, ready]);
   useEffect(() => {
     if (!visible) return;
     const prev = document.body.style.overflow;
@@ -531,15 +533,15 @@ function Intro() {
             muted
             playsInline
             preload="auto"
+            src={mobile ? "/assets/intro-mobile.mp4" : "/assets/intro.mp4"}
             poster="/assets/intro-poster.jpg"
             onCanPlay={() => setReady(true)}
             onEnded={() => setVisible(false)}
-            onError={() => setVisible(false)}
+            onError={(e) => {
+              if (e.currentTarget.error) setVisible(false);
+            }}
             onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / 46)}
-          >
-            <source media="(max-width: 700px)" src="/assets/intro-mobile.mp4" type="video/mp4" />
-            <source src="/assets/intro.mp4" type="video/mp4" />
-          </video>
+          ></video>
           <div className="intro-caption">
             <span>ТОВ БК СЛАВА</span>
             <span>АРХІТЕКТУРА ТОЧНОСТІ / З 2006 РОКУ</span>
