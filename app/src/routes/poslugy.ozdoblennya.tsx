@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ServicePage } from "../slava/site";
-import { pageHead, services } from "../slava/content";
-const service = services[4];
+import { heads, serviceFor } from "../slava/heads";
+const service = serviceFor("uk", "ozdoblennya");
 export const Route = createFileRoute("/poslugy/ozdoblennya")({
-  head: () => pageHead(service.name, "/poslugy/ozdoblennya", service.intro, service.image),
+  head: () => heads.service("uk", "ozdoblennya"),
   component: () => <ServicePage service={service} />,
 });

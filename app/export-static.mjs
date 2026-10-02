@@ -26,6 +26,19 @@ const routes = [
   "/pro-kompaniyu",
   "/kontakty",
   "/pryvatnist",
+  "/en",
+  "/en/poslugy",
+  "/en/poslugy/remont-pid-klyuch",
+  "/en/poslugy/gipsokarton",
+  "/en/poslugy/ozdoblennya",
+  "/en/poslugy/demontazh",
+  "/en/poslugy/santehnika-elektryka",
+  "/en/poslugy/steli",
+  "/en/poslugy/zagalnobudivelni-roboty",
+  "/en/portfolio",
+  "/en/pro-kompaniyu",
+  "/en/kontakty",
+  "/en/pryvatnist",
 ];
 
 const { default: worker } = await import("./dist/server/server.js");

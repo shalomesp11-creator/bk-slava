@@ -335,12 +335,18 @@ main:focus {
   color: var(--emerald);
   transition: transform 0.2s;
 }
-.service-rows > a:hover,
 .service-rows > a.active {
   padding-left: 12px;
 }
-.service-rows > a:hover .row-arrow {
-  transform: translate(3px, -3px);
+/* Hover styling only for real pointers: on touch screens the highlight is driven by the
+   `active` class alone, so it can never disagree with the preview image. */
+@media (hover: hover) and (pointer: fine) {
+  .service-rows > a:hover {
+    padding-left: 12px;
+  }
+  .service-rows > a:hover .row-arrow {
+    transform: translate(3px, -3px);
+  }
 }
 .service-preview {
   position: relative;
@@ -3318,5 +3324,66 @@ p {
   *:after {
     scroll-behavior: auto !important;
     transition: none !important;
+  }
+}
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.lang-switch a {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  min-height: 30px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.lang-switch a:hover {
+  color: var(--forest);
+}
+.lang-switch a[aria-current="true"] {
+  background: var(--forest);
+  color: var(--paper);
+}
+.lang-switch a:focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 2px;
+}
+.lang-switch.in-menu {
+  display: flex;
+  width: fit-content;
+  margin-top: 22px;
+  border-color: #54734b;
+}
+.lang-switch.in-menu a {
+  min-width: 56px;
+  min-height: 40px;
+  color: #c0d1b9;
+  font-size: 12px;
+}
+.lang-switch.in-menu a[aria-current="true"] {
+  background: var(--paper);
+  color: var(--forest);
+}
+.lang-switch.in-menu a:focus-visible {
+  outline-color: var(--mint);
+}
+@media (max-width: 600px) {
+  .lang-switch.in-header a {
+    min-width: 30px;
+    min-height: 34px;
+    padding: 0 7px;
+    font-size: 10px;
   }
 }

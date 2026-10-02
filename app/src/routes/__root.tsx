@@ -1,7 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
+import { useRouterState } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import { Arrow, SiteShell } from "../slava/site";
+import { ErrorPage, NotFoundPage, SiteShell } from "../slava/site";
+import { isKnownPath, useLang } from "../slava/i18n";
+import { ui } from "../slava/text";
 import appCss from "../styles.css?url";
 import appMeta from "../app-meta.json";
 import { origin } from "../slava/content";
@@ -37,46 +40,80 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   }),
   shellComponent: RootShell,
   component: Root,
-  notFoundComponent: () => (
-    <div className="error-page wrap">
-      <span>404</span>
-      <h1>Тут ще немає простору.</h1>
-      <p>Сторінку не знайдено. Поверніться до головної, щоб продовжити.</p>
-      <a href={withBase("/")}>На головну <Arrow diagonal />
-      </a>
-    </div>
-  ),
-  errorComponent: () => (
-    <div className="error-page wrap">
-      <h1>Сторінка не завантажилась.</h1>
-      <p>Спробуйте оновити її або повернутися на головну.</p>
-      <a href={withBase("/")}>На головну <Arrow diagonal />
-      </a>
-    </div>
-  ),
+  notFoundComponent: NotFoundPage,
+  errorComponent: ErrorPage,
 });
 const business = {
-  "@context": "https://schema.org",
-  "@type": "HomeAndConstructionBusiness",
-  name: "ТОВ БК Слава",
-  url: origin,
-  logo: origin + "/assets/logo-clean.png",
-  telephone: "+380676090075",
-  email: "m98720141@gmail.com",
-  foundingDate: "2006",
-  areaServed: [
-    { "@type": "City", name: "Київ" },
-    { "@type": "AdministrativeArea", name: "Київська область" },
-  ],
+  uk: {
+    "@context": "https://schema.org",
+    "@type": "HomeAndConstructionBusiness",
+    name: "ТОВ БК Слава",
+    url: origin,
+    logo: origin + "/assets/logo-clean.png",
+    telephone: "+380676090075",
+    email: "m98720141@gmail.com",
+    foundingDate: "2006",
+    areaServed: [
+      { "@type": "City", name: "Київ" },
+      { "@type": "AdministrativeArea", name: "Київська область" },
+    ],
+  },
+  en: {
+    "@context": "https://schema.org",
+    "@type": "HomeAndConstructionBusiness",
+    name: "BK Slava LLC",
+    url: origin + "/en/",
+    logo: origin + "/assets/logo-clean.png",
+    telephone: "+380676090075",
+    email: "m98720141@gmail.com",
+    foundingDate: "2006",
+    areaServed: [
+      { "@type": "City", name: "Kyiv" },
+      { "@type": "AdministrativeArea", name: "Kyiv Region" },
+    ],
+  },
 };
 function RootShell({ children }: { children: ReactNode }) {
+  const lang = useLang();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const englishNotFound = lang === "en" && !isKnownPath(pathname);
+  const englishNotFoundTitle = `${ui.en.notFound.title.replace(/\.$/, "")} | ${ui.en.meta.suffix}`;
   return (
-    <html lang="uk">
+    <html lang={lang}>
       <head>
-        <HeadContent />
+        {englishNotFound ? (
+          <>
+            <meta charSet="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>{englishNotFoundTitle}</title>
+            <meta name="description" content={ui.en.notFound.text} />
+            <meta name="theme-color" content="#063b0c" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content={englishNotFoundTitle} />
+            <meta property="og:description" content={ui.en.notFound.text} />
+            <meta property="og:locale" content={ui.en.meta.locale} />
+            <meta property="og:site_name" content={ui.en.meta.suffix} />
+            <meta property="og:image" content={origin + "/assets/og.webp"} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:image" content={origin + "/assets/og.webp"} />
+            <link rel="stylesheet" href={appCss} />
+            <link rel="icon" href={withBase("/favicon.ico")} />
+            <link rel="apple-touch-icon" href={withBase("/apple-touch-icon.png")} />
+            <link rel="manifest" href={withBase("/site.webmanifest")} />
+            <link
+              rel="preload"
+              href={withBase("/fonts/manrope-cyrillic.woff2")}
+              as="font"
+              type="font/woff2"
+              crossOrigin="anonymous"
+            />
+          </>
+        ) : (
+          <HeadContent />
+        )}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(business) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(business[lang]) }}
         />
       </head>
       <body>

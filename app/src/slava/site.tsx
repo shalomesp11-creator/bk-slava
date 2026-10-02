@@ -1,5 +1,6 @@
 import {
   createContext,
+  Fragment,
   useContext,
   useEffect,
   useRef,
@@ -9,9 +10,10 @@ import {
 } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouterState } from "@tanstack/react-router";
-import { services, projects, steps, phone, type Service } from "./content";
+import { phone, type Service } from "./content";
 import { base, withBase } from "./base";
-import { reviewDrafts } from "./review-drafts";
+import { isKnownPath, localePath, stripLang, useI18n } from "./i18n";
+import type { Lang } from "./text";
 
 export function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
@@ -79,7 +81,7 @@ const ContactContext = createContext<(service?: string, focusTarget?: HTMLElemen
 );
 export function ConsultationButton({
   className = "",
-  children = "Записатися на консультацію",
+  children,
   service,
   onClick,
   focusTarget,
@@ -91,17 +93,18 @@ export function ConsultationButton({
   focusTarget?: HTMLElement | null;
 }) {
   const open = useContext(ContactContext);
+  const { tx } = useI18n();
   return (
     <button
       className={`button-primary ${className}`}
-      aria-label={className === "header-consult" ? "Записатися на консультацію" : undefined}
+      aria-label={className === "header-consult" ? tx.common.consult : undefined}
       type="button"
       onClick={() => {
         onClick?.();
         open(service, focusTarget);
       }}
     >
-      {children}
+      {children ?? tx.common.consult}
       <Arrow diagonal />
     </button>
   );
@@ -134,62 +137,102 @@ export function Photo({
     />
   );
 }
-function Brand() {
+// Renders translated lines separated by <br />.
+function Lines({ lines }: { lines: readonly string[] }) {
   return (
-    <a href={withBase("/")} className="brand" aria-label="БК Слава, головна">
-      <img
-        src={withBase("/assets/logo-144.webp")}
-        alt="Логотип ТОВ БК Слава"
-        width="144"
-        height="144"
-      />
+    <>
+      {lines.map((line, i) => (
+        <Fragment key={i}>
+          {i > 0 && <br />}
+          {line}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+function Brand() {
+  const { tx, href } = useI18n();
+  return (
+    <a href={href("/")} className="brand" aria-label={tx.common.brandHome}>
+      <img src={withBase("/assets/logo-144.webp")} alt={tx.common.logoAlt} width="144" height="144" />
       <span>
-        БК СЛАВА<small>БУДУЄМО З 2006 РОКУ</small>
+        {tx.nav.title.toUpperCase()}
+        <small>{tx.common.brandSub}</small>
       </span>
     </a>
   );
 }
-function ContactMethods({ large = false }: { large?: boolean }) {
+// UA / EN switch: a plain link to the mirrored page, so the visitor stays on the page they are on.
+function LangSwitch({ className = "" }: { className?: string }) {
+  const { lang, tx } = useI18n();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  // An unknown address has no mirrored page, so the switch goes to the home page instead.
+  const missing = !isKnownPath(pathname);
+  const [suffix, setSuffix] = useState("");
+  useEffect(() => {
+    setSuffix(location.search + location.hash);
+  }, [pathname]);
+  const options: [Lang, string, string][] = [
+    ["uk", "UA", tx.common.langUk],
+    ["en", "EN", tx.common.langEn],
+  ];
   return (
-    <>
-      <div className={"contact-methods " + (large ? "large" : "")}>
-        <a aria-label="Телефон" href="tel:+380676090075">
-          <ContactIcon kind="phone" />
-          <span>Телефон</span>
-          <Arrow diagonal />
-        </a>
+    <div className={"lang-switch " + className} role="group" aria-label={tx.common.langLabel}>
+      {options.map(([code, label, name]) => (
         <a
-          aria-label="WhatsApp"
-          href="https://wa.me/380676090075"
-          target="_blank"
-          rel="noopener noreferrer"
+          key={code}
+          href={withBase(localePath(code, missing ? "/" : stripLang(pathname))) + (missing ? "" : suffix)}
+          lang={code}
+          hrefLang={code}
+          aria-label={name}
+          aria-current={code === lang ? "true" : undefined}
         >
-          <ContactIcon kind="whatsapp" />
-          <span>WhatsApp</span>
-          <Arrow diagonal />
+          {label}
         </a>
-        <a aria-label="Viber" href="viber://chat?number=%2B380676090075">
-          <ContactIcon kind="viber" />
-          <span>Viber</span>
-          <Arrow diagonal />
-        </a>
-        <a
-          aria-label="Telegram"
-          href="https://t.me/Alla_301175"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <ContactIcon kind="telegram" />
-          <span>Telegram</span>
-          <Arrow diagonal />
-        </a>
-        <a aria-label="Email" href="mailto:m98720141@gmail.com">
-          <ContactIcon kind="email" />
-          <span>Email</span>
-          <Arrow diagonal />
-        </a>
-      </div>
-    </>
+      ))}
+    </div>
+  );
+}
+function ContactMethods({ large = false }: { large?: boolean }) {
+  const { tx } = useI18n();
+  return (
+    <div className={"contact-methods " + (large ? "large" : "")}>
+      <a aria-label={tx.common.phone} href="tel:+380676090075">
+        <ContactIcon kind="phone" />
+        <span>{tx.common.phone}</span>
+        <Arrow diagonal />
+      </a>
+      <a
+        aria-label="WhatsApp"
+        href="https://wa.me/380676090075"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <ContactIcon kind="whatsapp" />
+        <span>WhatsApp</span>
+        <Arrow diagonal />
+      </a>
+      <a aria-label="Viber" href="viber://chat?number=%2B380676090075">
+        <ContactIcon kind="viber" />
+        <span>Viber</span>
+        <Arrow diagonal />
+      </a>
+      <a
+        aria-label="Telegram"
+        href="https://t.me/Alla_301175"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <ContactIcon kind="telegram" />
+        <span>Telegram</span>
+        <Arrow diagonal />
+      </a>
+      <a aria-label="Email" href="mailto:m98720141@gmail.com">
+        <ContactIcon kind="email" />
+        <span>Email</span>
+        <Arrow diagonal />
+      </a>
+    </div>
   );
 }
 function Consultation({
@@ -199,10 +242,12 @@ function Consultation({
   returnFocus,
 }: {
   open: boolean;
-  onOpenChange: (v: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   service: string;
   returnFocus: () => void;
 }) {
+  const { tx, href, data } = useI18n();
+  const f = tx.form;
   const [values, setValues] = useState({
     name: "",
     phone: "",
@@ -233,15 +278,15 @@ function Consultation({
       formRef.current?.querySelector<HTMLElement>(`[name="${field}"]`)?.focus();
     };
     if (!values.name.trim()) {
-      reject("name", "Вкажіть, будь ласка, ваше ім’я.");
+      reject("name", f.errName);
       return;
     }
     if (!/^(380\d{9}|0\d{9})$/.test(digits)) {
-      reject("phone", "Вкажіть український номер: +380 та 9 цифр або 0 та 9 цифр.");
+      reject("phone", f.errPhone);
       return;
     }
     if (!values.consent) {
-      reject("consent", "Підтвердьте згоду на обробку контактних даних.");
+      reject("consent", f.errConsent);
       return;
     }
     try {
@@ -254,7 +299,7 @@ function Consultation({
     setInvalidField("");
     setSaved(true);
   }
-  const emailBody = `Консультація БК Слава\nІм’я: ${values.name}\nТелефон: ${values.phone}\nОб’єкт: ${values.place}\nПослуга: ${values.service}\n${values.message}`;
+  const emailBody = `${f.mailSubject}\n${f.mailName}: ${values.name}\n${f.mailPhone}: ${values.phone}\n${f.mailPlace}: ${values.place}\n${f.mailService}: ${values.service}\n${values.message}`;
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -266,50 +311,42 @@ function Consultation({
             returnFocus();
           }}
         >
-          <Dialog.Close className="close-control" aria-label="Закрити форму">
+          <Dialog.Close className="close-control" aria-label={f.close}>
             <Close />
           </Dialog.Close>
-          <div className="panel-topline">БК СЛАВА / КОНСУЛЬТАЦІЯ</div>
+          <div className="panel-topline">{f.topline}</div>
           <Dialog.Title>
-            Ваш простір.
-            <br />
-            Наш наступний крок.
+            <Lines lines={f.title} />
           </Dialog.Title>
-          <Dialog.Description>
-            Розкажіть про об’єкт. Підготуємо звернення, щоб вам було зручно обговорити деталі.
-          </Dialog.Description>
+          <Dialog.Description>{f.description}</Dialog.Description>
           {saved ? (
             <div className="form-complete" role="status">
               <span className="complete-mark">✓</span>
-              <h3>Звернення підготовлено</h3>
-              <p>
-                {stored
-                  ? "Дані збережено лише у цьому браузері на час сесії. Автоматичне надсилання ще не підключене."
-                  : "Дані доступні лише у відкритій формі. Автоматичне надсилання ще не підключене."}
-              </p>
+              <h3>{f.doneTitle}</h3>
+              <p>{stored ? f.storedYes : f.storedNo}</p>
               <a
                 className="email-draft"
                 href={
                   "mailto:m98720141@gmail.com?subject=" +
-                  encodeURIComponent("Консультація БК Слава") +
+                  encodeURIComponent(f.mailSubject) +
                   "&body=" +
                   encodeURIComponent(emailBody)
                 }
               >
-                Надіслати через пошту <Arrow diagonal />
+                {f.sendMail} <Arrow diagonal />
               </a>
               <a href="tel:+380676090075" className="notice-phone">
                 {phone}
               </a>
               <button className="text-link" onClick={() => setSaved(false)}>
-                Повернутися до форми
+                {f.back}
               </button>
             </div>
           ) : (
             <form ref={formRef} onSubmit={submit} noValidate>
               <div className="form-grid">
                 <label>
-                  Ваше ім’я *
+                  {f.name}
                   <input
                     autoComplete="given-name"
                     name="name"
@@ -317,13 +354,13 @@ function Consultation({
                     aria-describedby={invalidField === "name" ? "consultation-error" : undefined}
                     value={values.name}
                     onChange={(e) => setValues({ ...values, name: e.target.value })}
-                    placeholder="Як до вас звертатися"
+                    placeholder={f.namePlaceholder}
                     required
                     maxLength={80}
                   />
                 </label>
                 <label>
-                  Телефон *
+                  {f.phone}
                   <input
                     type="tel"
                     inputMode="tel"
@@ -333,43 +370,43 @@ function Consultation({
                     aria-describedby={invalidField === "phone" ? "consultation-error" : undefined}
                     value={values.phone}
                     onChange={(e) => setValues({ ...values, phone: e.target.value })}
-                    placeholder="+380 __ ___ __ __"
+                    placeholder={f.phonePlaceholder}
                     required
                     maxLength={25}
                   />
                 </label>
               </div>
               <label>
-                Де знаходиться об’єкт?
+                {f.place}
                 <input
                   name="place"
                   autoComplete="address-level2"
                   value={values.place}
                   onChange={(e) => setValues({ ...values, place: e.target.value })}
-                  placeholder="Київ або населений пункт області"
+                  placeholder={f.placePlaceholder}
                   maxLength={120}
                 />
               </label>
               <label>
-                Що плануєте зробити?
+                {f.what}
                 <select
                   name="service"
                   value={values.service}
                   onChange={(e) => setValues({ ...values, service: e.target.value })}
                 >
-                  <option value="">Обрати напрямок</option>
-                  {services.map((s) => (
+                  <option value="">{f.choose}</option>
+                  {data.services.map((s) => (
                     <option key={s.slug}>{s.name}</option>
                   ))}
                 </select>
               </label>
               <label>
-                Кілька слів про завдання
+                {f.message}
                 <textarea
                   name="message"
                   value={values.message}
                   onChange={(e) => setValues({ ...values, message: e.target.value })}
-                  placeholder="Тип приміщення, стан і бажаний результат"
+                  placeholder={f.messagePlaceholder}
                   rows={3}
                   maxLength={2000}
                 />
@@ -385,9 +422,9 @@ function Consultation({
                   onChange={(e) => setValues({ ...values, consent: e.target.checked })}
                 />
                 <span>
-                  Погоджуюсь на обробку даних згідно з{" "}
-                  <a href={withBase("/pryvatnist")} target="_blank" rel="noopener noreferrer">
-                    політикою приватності
+                  {f.consent}{" "}
+                  <a href={href("/pryvatnist")} target="_blank" rel="noopener noreferrer">
+                    {f.privacyLink}
                   </a>
                   .
                 </span>
@@ -398,10 +435,10 @@ function Consultation({
                 </p>
               )}
               <button type="submit" className="form-submit">
-                Підготувати звернення <Arrow diagonal />
+                {f.submit} <Arrow diagonal />
               </button>
               <p className="form-note">
-                Або зв’яжіться напряму: <a href="tel:+380676090075">{phone}</a>
+                {f.direct} <a href="tel:+380676090075">{phone}</a>
               </p>
             </form>
           )}
@@ -477,18 +514,25 @@ function useImageRecovery() {
 }
 export function SiteShell({ children }: { children: ReactNode }) {
   useImageRecovery();
+  const { lang, tx, href } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const opener = useRef<HTMLElement | null>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [service, setService] = useState("");
   const [menu, setMenu] = useState(false);
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+  // Route patterns are language-neutral; the "/en" prefix is only part of the visible URL.
+  const current = stripLang(pathname);
   const links = [
-    ["/poslugy", "Послуги"],
-    ["/portfolio", "Наші роботи"],
-    ["/pro-kompaniyu", "Про компанію"],
-    ["/kontakty", "Контакти"],
+    ["/poslugy", tx.common.services],
+    ["/portfolio", tx.common.portfolio],
+    ["/pro-kompaniyu", tx.common.about],
+    ["/kontakty", tx.common.contacts],
   ];
+  const isCurrent = (url: string) => current === url || current.startsWith(url + "/");
   return (
     <ContactContext.Provider
       value={(s, focusTarget) => {
@@ -501,17 +545,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
       }}
     >
       <a className="skip-link" href="#main">
-        Перейти до вмісту
+        {tx.common.skip}
       </a>
       <header className="site-header">
         <Brand />
-        <nav className="desktop-nav" aria-label="Основна навігація">
+        <nav className="desktop-nav" aria-label={tx.nav.main}>
           {links.map(([url, title]) => (
-            <a
-              key={url}
-              href={withBase(url)}
-              aria-current={pathname === url || pathname.startsWith(url + "/") ? "page" : undefined}
-            >
+            <a key={url} href={href(url)} aria-current={isCurrent(url) ? "page" : undefined}>
               {title}
             </a>
           ))}
@@ -520,14 +560,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <a className="header-phone" href="tel:+380676090075">
             {phone}
           </a>
+          <LangSwitch className="in-header" />
           <ConsultationButton className="header-consult">
-            <span>Консультація</span>
+            <span>{tx.common.consultShort}</span>
           </ConsultationButton>
           <button
             ref={menuTrigger}
             className="menu-toggle"
             onClick={() => setMenu(true)}
-            aria-label="Відкрити меню"
+            aria-label={tx.nav.open}
             aria-expanded={menu}
             aria-controls="mobile-navigation"
           >
@@ -547,23 +588,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
               if (!open) menuTrigger.current?.focus();
             }}
           >
-            <Dialog.Close className="close-control" aria-label="Закрити меню">
+            <Dialog.Close className="close-control" aria-label={tx.nav.close}>
               <Close />
             </Dialog.Close>
-            <Dialog.Title>БК Слава</Dialog.Title>
-            <Dialog.Description>Будівельні та ремонтні роботи з 2006 року.</Dialog.Description>
-            <nav aria-label="Мобільна навігація">
-              <a href={withBase("/")} aria-current={pathname === "/" ? "page" : undefined}>
-                Головна <Arrow diagonal />
+            <Dialog.Title>{tx.nav.title}</Dialog.Title>
+            <Dialog.Description>{tx.nav.description}</Dialog.Description>
+            <LangSwitch className="in-menu" />
+            <nav aria-label={tx.nav.mobile}>
+              <a href={href("/")} aria-current={current === "/" ? "page" : undefined}>
+                {tx.common.home} <Arrow diagonal />
               </a>
               {links.map(([url, title]) => (
-                <a
-                  key={url}
-                  href={withBase(url)}
-                  aria-current={
-                    pathname === url || pathname.startsWith(url + "/") ? "page" : undefined
-                  }
-                >
+                <a key={url} href={href(url)} aria-current={isCurrent(url) ? "page" : undefined}>
                   {title}
                   <Arrow diagonal />
                 </a>
@@ -581,17 +617,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="footer-main">
           <Brand />
           <p>
-            Продумані рішення.
-            <br />
-            Акуратне виконання.
-            <br />
-            Київ та Київська область.
+            <Lines lines={tx.footer.tagline} />
           </p>
           <div className="footer-links">
-            <a href={withBase("/poslugy")}>Послуги</a>
-            <a href={withBase("/portfolio")}>Наші роботи</a>
-            <a href={withBase("/pro-kompaniyu")}>Про компанію</a>
-            <a href={withBase("/kontakty")}>Контакти</a>
+            <a href={href("/poslugy")}>{tx.common.services}</a>
+            <a href={href("/portfolio")}>{tx.common.portfolio}</a>
+            <a href={href("/pro-kompaniyu")}>{tx.common.about}</a>
+            <a href={href("/kontakty")}>{tx.common.contacts}</a>
           </div>
           <div className="footer-contacts">
             <a href="tel:+380676090075">{phone}</a>
@@ -600,9 +632,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} ТОВ БК Слава</span>
-          <span>Працюємо з 2006 року</span>
-          <a href={withBase("/pryvatnist")}>Приватність</a>
+          <span>
+            © {new Date().getFullYear()} {tx.common.company}
+          </span>
+          <span>{tx.footer.since}</span>
+          <a href={href("/pryvatnist")}>{tx.common.privacy}</a>
         </div>
       </footer>
       <Consultation
@@ -623,6 +657,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   );
 }
 function Intro() {
+  const { tx } = useI18n();
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
   const [mobile, setMobile] = useState(false);
@@ -663,7 +698,7 @@ function Intro() {
             video.current?.closest<HTMLElement>(".intro")?.focus();
           }}
         >
-          <Dialog.Title className="sr-only">Вступне відео БК Слава</Dialog.Title>
+          <Dialog.Title className="sr-only">{tx.intro.title}</Dialog.Title>
           <video
             ref={video}
             className={ready ? "ready" : ""}
@@ -683,11 +718,11 @@ function Intro() {
             }
           ></video>
           <div className="intro-caption">
-            <span>ТОВ БК СЛАВА</span>
-            <span>АРХІТЕКТУРА ТОЧНОСТІ / З 2006 РОКУ</span>
+            <span>{tx.intro.caption}</span>
+            <span>{tx.intro.tagline}</span>
           </div>
           <button className="intro-skip" onClick={() => setVisible(false)}>
-            Перейти на сайт <Arrow />
+            {tx.intro.skip} <Arrow />
           </button>
           <div className="intro-progress" style={{ transform: `scaleX(${progress})` }} />
         </Dialog.Content>
@@ -696,49 +731,41 @@ function Intro() {
   );
 }
 export function Home() {
+  const { tx, href } = useI18n();
+  const h = tx.home;
   return (
     <>
       <Intro />
       <section className="home-hero">
-        <Photo
-          name="hero"
-          alt="Світла вітальня з природними матеріалами та зеленою кухнею"
-          priority
-          sizes="100vw"
-        />
+        <Photo name="hero" alt={h.heroAlt} priority sizes="100vw" />
         <div className="hero-shade" />
         <div className="hero-content">
-          <span className="hero-kicker">БУДІВЕЛЬНА КОМПАНІЯ • КИЇВ ТА ОБЛАСТЬ</span>
+          <span className="hero-kicker">{h.kicker}</span>
           <h1>
-            Простір, у якому
-            <br />
-            хочеться жити.
+            <Lines lines={h.title} />
           </h1>
-          <p>Ремонт і будівельні роботи з увагою до кожної деталі.</p>
+          <p>{h.lead}</p>
         </div>
         <ConsultationButton className="hero-consult">
-          <span>Записатися на консультацію</span>
+          <span>{tx.common.consult}</span>
         </ConsultationButton>
-        <span className="hero-caption">ЖИТЛОВІ ТА КОМЕРЦІЙНІ ПРОСТОРИ</span>
+        <span className="hero-caption">{h.caption}</span>
       </section>
       <section className="year-section wrap">
         <div className="year-number">
-          <span className="year-eyebrow">ТОВ БК СЛАВА / НАША ІСТОРІЯ</span>
+          <span className="year-eyebrow">{h.yearEyebrow}</span>
           <strong>
             2006<span className="year-dot">.</span>
           </strong>
           <span className="year-baseline">
-            ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <Arrow diagonal />
+            {h.yearBaseline} <Arrow diagonal />
           </span>
         </div>
         <div>
-          <h2>20 років досвіду, що стає основою.</h2>
-          <p>
-            ТОВ БК Слава працює з 2006 року. Виконуємо ремонтні та будівельні роботи у Києві й
-            Київській області, поєднуючи практичні рішення з акуратним виконанням.
-          </p>
-          <a className="text-link" href={withBase("/pro-kompaniyu")}>
-            Познайомитися з компанією <Arrow diagonal />
+          <h2>{h.yearTitle}</h2>
+          <p>{h.yearText}</p>
+          <a className="text-link" href={href("/pro-kompaniyu")}>
+            {h.yearLink} <Arrow diagonal />
           </a>
         </div>
       </section>
@@ -751,6 +778,9 @@ export function Home() {
   );
 }
 function WorkCarousel() {
+  const { tx, href, data } = useI18n();
+  const c = tx.carousel;
+  const { projects } = data;
   const track = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(0);
   const [atEnd, setAtEnd] = useState(false);
@@ -782,12 +812,13 @@ function WorkCarousel() {
     });
   };
   return (
-    <section className="selected-work wrap" aria-label="Наші роботи">
+    <section className="selected-work wrap" aria-label={c.label}>
       <div className="work-heading">
         <div>
-          <span className="eyebrow">НАШІ РОБОТИ / ПРОСТІР. МАТЕРІАЛИ. ДЕТАЛІ.</span>
+          <span className="eyebrow">{c.eyebrow}</span>
           <h2>
-            Наші роботи<span className="accent-dot">.</span>
+            {c.title}
+            <span className="accent-dot">.</span>
           </h2>
         </div>
         <div className="carousel-controls">
@@ -798,7 +829,7 @@ function WorkCarousel() {
             className="round-control previous"
             onClick={() => move(-1)}
             disabled={position === 0}
-            aria-label="Попередня робота"
+            aria-label={c.prev}
           >
             <Arrow />
           </button>
@@ -806,7 +837,7 @@ function WorkCarousel() {
             className="round-control"
             onClick={() => move(1)}
             disabled={atEnd}
-            aria-label="Наступна робота"
+            aria-label={c.next}
           >
             <Arrow />
           </button>
@@ -817,7 +848,7 @@ function WorkCarousel() {
         className="work-track"
         tabIndex={0}
         role="group"
-        aria-label="Карусель робіт"
+        aria-label={c.group}
         onKeyDown={(e) => {
           if (e.target !== e.currentTarget) return;
           if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
@@ -827,7 +858,7 @@ function WorkCarousel() {
         }}
       >
         {projects.map((p) => (
-          <a href={withBase("/portfolio?project=" + p.id)} className="project-link" key={p.id}>
+          <a href={href("/portfolio") + "?project=" + p.id} className="project-link" key={p.id}>
             <div className="image-crop">
               <Photo name={p.image} alt={p.title} />
               <span className="project-open">
@@ -842,29 +873,38 @@ function WorkCarousel() {
         ))}
       </div>
       <div className="gallery-foot">
-        <span>Добірка напрямків наших робіт. Зображення — архітектурні візуалізації.</span>
-        <a className="text-link" href={withBase("/portfolio")}>
-          Усі наші роботи <Arrow />
+        <span>{c.foot}</span>
+        <a className="text-link" href={href("/portfolio")}>
+          {c.all} <Arrow />
         </a>
       </div>
     </section>
   );
 }
 function ServicesDirectory({ full = false }: { full?: boolean }) {
+  const { tx, href, data } = useI18n();
+  const d = tx.directory;
+  const { services } = data;
   const [active, setActive] = useState(0);
+  // The row's highlight and the preview below are both driven by `active`. It is set on
+  // pointer-down as well as on hover/focus so a touch or press immediately shows the matching
+  // image, and a plain tap still follows the link.
   return (
     <section className={"services-directory wrap " + (full ? "directory-full" : "")}>
       <div className="section-heading">
-        <h2>{full ? "Один процес. Різні завдання." : "Роботи, що формують простір."}</h2>
-        <p>Повний ремонт або окремий етап. Обирайте напрямок, який потрібен вашому об’єкту.</p>
+        <h2>{full ? d.titleFull : d.title}</h2>
+        <p>{d.text}</p>
       </div>
       <div className="service-index">
         <div className="service-rows">
           {services.map((s, i) => (
             <a
-              href={withBase("/poslugy/" + s.slug)}
+              href={href("/poslugy/" + s.slug)}
               key={s.slug}
-              onMouseEnter={() => setActive(i)}
+              onPointerDown={() => setActive(i)}
+              onPointerEnter={(e) => {
+                if (e.pointerType === "mouse") setActive(i);
+              }}
               onFocus={() => setActive(i)}
               className={active === i ? "active" : ""}
             >
@@ -891,11 +931,13 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
             ))}
           </div>
           <div className="preview-description">
-            <span>0{active + 1} / НАПРЯМОК РОБІТ</span>
+            <span>
+              0{active + 1} / {d.previewLabel}
+            </span>
             <h3>{services[active].name}</h3>
             <p>{services[active].short}</p>
-            <a className="text-link" href={withBase("/poslugy/" + services[active].slug)}>
-              Докладніше про послугу <Arrow diagonal />
+            <a className="text-link" href={href("/poslugy/" + services[active].slug)}>
+              {d.more} <Arrow diagonal />
             </a>
           </div>
         </div>
@@ -904,7 +946,10 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
   );
 }
 function Reviews() {
-  const cards = (items: typeof reviewDrafts) =>
+  const { tx, data } = useI18n();
+  const r = tx.reviews;
+  const { reviews } = data;
+  const cards = (items: typeof reviews) =>
     items.map((review) => (
       <figure className="review-card" key={review.name + review.place}>
         <span className="review-quote" aria-hidden="true">
@@ -921,35 +966,40 @@ function Reviews() {
     <section className="reviews-section wrap" aria-labelledby="reviews-heading">
       <div className="section-heading">
         <div>
-          <span className="eyebrow">ДОСВІД СПІВПРАЦІ</span>
+          <span className="eyebrow">{r.eyebrow}</span>
           <h2 id="reviews-heading">
-            Відгуки<span className="accent-dot">.</span>
+            {r.title}
+            <span className="accent-dot">.</span>
           </h2>
         </div>
-        <p className="reviews-note">
-          Підготовлені тексти для погодження компанією; відгуки ще не підтверджені.
-        </p>
+        <p className="reviews-note">{r.note}</p>
       </div>
-      <div className="reviews-grid">{cards(reviewDrafts.slice(0, 3))}</div>
+      <div className="reviews-grid">{cards(reviews.slice(0, 3))}</div>
       <details className="reviews-more">
         <summary>
-          Усі відгуки ({reviewDrafts.length})<span aria-hidden="true">+</span>
+          {r.all + " ("}
+          {reviews.length}
+          {")"}
+          <span aria-hidden="true">+</span>
         </summary>
-        <div className="reviews-grid">{cards(reviewDrafts.slice(3))}</div>
+        <div className="reviews-grid">{cards(reviews.slice(3))}</div>
       </details>
     </section>
   );
 }
 export function Process() {
+  const { tx, data } = useI18n();
   return (
     <section className="process-section">
       <div className="wrap">
         <h2>
-          <span className="eyebrow">ПОСЛІДОВНІСТЬ, ЯКА ДАЄ РЕЗУЛЬТАТ</span>Від задуму <br />
-          до останньої деталі.
+          <span className="eyebrow">{tx.process.eyebrow}</span>
+          {tx.process.title[0]}
+          <br />
+          {tx.process.title[1]}
         </h2>
         <div className="process-grid">
-          {steps.map(([name, text], i) => (
+          {data.steps.map(([name, text], i) => (
             <div key={name}>
               <span className="step-index">0{i + 1}</span>
               <h3>{name}</h3>
@@ -962,13 +1012,13 @@ export function Process() {
   );
 }
 export function ContactBand() {
+  const { tx } = useI18n();
   return (
     <section className="contact-band wrap">
       <div>
-        <span className="contact-kicker">Є ІДЕЯ ДЛЯ ВАШОГО ОБ’ЄКТА?</span>
+        <span className="contact-kicker">{tx.band.kicker}</span>
         <h2>
-          Почнемо з<br />
-          вашого простору.
+          <Lines lines={tx.band.title} />
         </h2>
         <a className="contact-big-phone" href="tel:+380676090075">
           {phone}
@@ -976,19 +1026,20 @@ export function ContactBand() {
         <ContactMethods />
       </div>
       <ConsultationButton className="contact-consult">
-        <span>Записатися на консультацію</span>
+        <span>{tx.common.consult}</span>
       </ConsultationButton>
     </section>
   );
 }
 function Breadcrumb({ current, service = false }: { current: string; service?: boolean }) {
+  const { tx, href } = useI18n();
   return (
-    <nav className={`breadcrumb${service ? " breadcrumb-service" : ""}`} aria-label="Шлях сторінки">
-      <a href={withBase("/")}>Головна</a>
+    <nav className={`breadcrumb${service ? " breadcrumb-service" : ""}`} aria-label={tx.breadcrumb}>
+      <a href={href("/")}>{tx.common.home}</a>
       <span>/</span>
       {service && (
         <>
-          <a href={withBase("/poslugy")}>Послуги</a>
+          <a href={href("/poslugy")}>{tx.common.services}</a>
           <span>/</span>
         </>
       )}
@@ -997,27 +1048,21 @@ function Breadcrumb({ current, service = false }: { current: string; service?: b
   );
 }
 export function ServicesPage() {
+  const { tx } = useI18n();
+  const p = tx.servicesPage;
   return (
     <>
       <div className="page-title wrap">
-        <Breadcrumb current="Послуги" />
+        <Breadcrumb current={tx.common.services} />
         <h1>
-          Будуємо основу.
+          {p.title[0]}
           <br />
-          <span>Завершуємо деталі.</span>
+          <span>{p.title[1]}</span>
         </h1>
-        <p>
-          Шість напрямків для цілісного результату. Працюємо з квартирами, будинками, офісами й
-          комерційними приміщеннями.
-        </p>
+        <p>{p.text}</p>
       </div>
       <div className="page-banner wrap">
-        <Photo
-          name="house"
-          alt="Сучасний житловий простір із натуральними матеріалами"
-          priority
-          sizes="100vw"
-        />
+        <Photo name="house" alt={p.bannerAlt} priority sizes="100vw" />
       </div>
       <ServicesDirectory full />
       <Process />
@@ -1026,15 +1071,17 @@ export function ServicesPage() {
   );
 }
 export function ServicePage({ service: s }: { service: Service }) {
-  const index = services.indexOf(s);
-  const next = services[(index + 1) % services.length];
+  const { tx, href, data } = useI18n();
+  const p = tx.servicePage;
+  const index = data.services.findIndex((item) => item.slug === s.slug);
+  const next = data.services[(index + 1) % data.services.length];
   return (
     <>
       <div className={`page-title service-title wrap service-${s.slug}`}>
         <Breadcrumb current={s.name} service />
         <div className="service-title-grid">
           <div>
-            <span className="service-label">КИЇВ ТА КИЇВСЬКА ОБЛАСТЬ</span>
+            <span className="service-label">{p.label}</span>
             <h1>{s.name}</h1>
             <p>{s.short}</p>
             <ConsultationButton service={s.name} className="service-consult" />
@@ -1046,18 +1093,14 @@ export function ServicePage({ service: s }: { service: Service }) {
       </div>
       <section className="service-description wrap">
         <h2>
-          Продуманий підхід.
-          <br />
-          Видимий результат.
+          <Lines lines={p.approach} />
         </h2>
         <p>{s.intro}</p>
       </section>
       <section className="scope-section wrap">
         <div className="section-heading">
-          <h2>Що виконуємо</h2>
-          <p>
-            Обсяг робіт погоджуємо після знайомства з об’єктом. Тут можна обрати потрібні завдання.
-          </p>
+          <h2>{p.scopeTitle}</h2>
+          <p>{p.scopeText}</p>
         </div>
         <div className="scope-grid">
           {s.scope.map((name, i) => (
@@ -1071,53 +1114,27 @@ export function ServicePage({ service: s }: { service: Service }) {
       </section>
       <div className="service-result">
         <div className="wrap">
-          <span>РЕЗУЛЬТАТ, ДО ЯКОГО ПРАЦЮЄМО</span>
+          <span>{p.resultLabel}</span>
           <h2>{s.result}</h2>
         </div>
       </div>
       <Process />
       <section className="faq wrap">
-        <h2>Перед початком робіт</h2>
+        <h2>{p.faqTitle}</h2>
         <div>
-          <details>
-            <summary>
-              Як визначається вартість?<span>+</span>
-            </summary>
-            <p>
-              Після обговорення задачі та огляду приміщення. На вартість впливають стан основ,
-              обсяг, матеріали й умови виконання. Погоджуємо склад робіт до початку.
-            </p>
-          </details>
-          <details>
-            <summary>
-              Чи можна замовити тільки цей напрямок?<span>+</span>
-            </summary>
-            <p>
-              Так. Напрямок можна обговорити як окреме завдання або як частину комплексного ремонту.
-            </p>
-          </details>
-          <details>
-            <summary>
-              Що підготувати для консультації?<span>+</span>
-            </summary>
-            <p>
-              Адресу або населений пункт, опис стану приміщення та бажаного результату. План і
-              фотографії допоможуть точніше обговорити завдання.
-            </p>
-          </details>
-          <details>
-            <summary>
-              У яких населених пунктах працюєте?<span>+</span>
-            </summary>
-            <p>
-              Київ та Київська область. Деталі виїзду й організації робіт погоджуємо для вашого
-              об’єкта.
-            </p>
-          </details>
+          {p.faq.map(([question, answer]) => (
+            <details key={question}>
+              <summary>
+                {question}
+                <span>+</span>
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
         </div>
       </section>
-      <a className="next-service wrap" href={withBase("/poslugy/" + next.slug)}>
-        <span>Наступний напрямок</span>
+      <a className="next-service wrap" href={href("/poslugy/" + next.slug)}>
+        <span>{p.next}</span>
         <h3>{next.name}</h3>
         <Arrow diagonal />
       </a>
@@ -1126,16 +1143,18 @@ export function ServicePage({ service: s }: { service: Service }) {
   );
 }
 function BeforeAfter() {
+  const { tx } = useI18n();
+  const c = tx.compare;
   const [value, setValue] = useState(50);
   return (
     <div className="comparison">
       <div className="compare-images">
-        <Photo name="after" alt="Візуалізація цього приміщення після ремонту" sizes="100vw" />
+        <Photo name="after" alt={c.afterAlt} sizes="100vw" />
         <div className="compare-before" style={{ clipPath: `inset(0 ${100 - value}% 0 0)` }}>
-          <Photo name="before" alt="Приміщення з чорновими поверхнями до ремонту" sizes="100vw" />
+          <Photo name="before" alt={c.beforeAlt} sizes="100vw" />
         </div>
-        <span className="compare-tag before">До</span>
-        <span className="compare-tag after">Після</span>
+        <span className="compare-tag before">{c.before}</span>
+        <span className="compare-tag after">{c.after}</span>
         <div className="compare-line" style={{ left: value + "%" }}>
           <span>↔</span>
         </div>
@@ -1145,48 +1164,40 @@ function BeforeAfter() {
           max="100"
           value={value}
           onChange={(e) => setValue(Number(e.target.value))}
-          aria-label="Порівняти вигляд до та після ремонту"
-          aria-valuetext={`${value}% до ремонту, ${100 - value}% після ремонту`}
+          aria-label={c.slider}
+          aria-valuetext={c.valueText(value)}
         />
       </div>
-      <p>
-        Рухайте розділювач, щоб порівняти. Візуалізація перетворення, створена для ілюстрації
-        можливого результату.
-      </p>
+      <p>{c.hint}</p>
     </div>
   );
 }
 export function Portfolio() {
-  const [filter, setFilter] = useState("Усі");
+  const { tx, data } = useI18n();
+  const p = tx.portfolioPage;
+  const { projects, services } = data;
+  const [filter, setFilter] = useState(p.all);
   const [selected, setSelected] = useState<(typeof projects)[number] | null>(null);
   const projectOpener = useRef<HTMLElement | null>(null);
   const handoff = useRef(false);
   useEffect(() => {
     const id = new URLSearchParams(location.search).get("project");
-    if (id) setSelected(projects.find((p) => p.id === id) || null);
-  }, []);
-  const categories = [
-    "Усі",
-    "Житлові простори",
-    "Комерційні простори",
-    "Оздоблення",
-    "Підготовка та монтаж",
-  ];
+    if (id) setSelected(projects.find((item) => item.id === id) || null);
+  }, [projects]);
+  const categories = [p.all, ...p.categories];
+  const visible = projects.filter((item) => filter === p.all || item.category === filter);
   return (
     <>
       <div className="page-title wrap">
-        <Breadcrumb current="Наші роботи" />
+        <Breadcrumb current={tx.common.portfolio} />
         <h1>
-          Наші роботи<span className="accent-dot">.</span>
+          {p.title}
+          <span className="accent-dot">.</span>
         </h1>
-        <p>
-          Добірка напрямків наших робіт для житлових і комерційних просторів. Архітектурні
-          візуалізації показують характер матеріалів і можливий результат; вони не є фотографіями
-          виконаних об’єктів компанії.
-        </p>
+        <p>{p.text}</p>
       </div>
       <section className="portfolio-section wrap">
-        <div className="portfolio-filters" role="group" aria-label="Категорії робіт">
+        <div className="portfolio-filters" role="group" aria-label={p.filtersLabel}>
           {categories.map((c) => (
             <button
               aria-pressed={filter === c}
@@ -1199,38 +1210,37 @@ export function Portfolio() {
           ))}
         </div>
         <p className="filter-count" aria-live="polite">
-          {projects.filter((p) => filter === "Усі" || p.category === filter).length} робіт у добірці
+          {visible.length}
+          {p.count(visible.length)}
         </p>
         <div className="portfolio-grid">
-          {projects
-            .filter((p) => filter === "Усі" || p.category === filter)
-            .map((p) => (
-              <button
-                className="portfolio-project"
-                onClick={(e) => {
-                  projectOpener.current = e.currentTarget;
-                  handoff.current = false;
-                  setSelected(p);
-                }}
-                key={p.id}
-              >
-                <div className="image-crop">
-                  <Photo name={p.image} alt={p.title} />
-                  <span className="project-open">
-                    <Arrow diagonal />
-                  </span>
-                </div>
-                <div className="project-caption">
-                  <h2>{p.title}</h2>
-                  <span>{p.type}</span>
-                </div>
-              </button>
-            ))}
+          {visible.map((item) => (
+            <button
+              className="portfolio-project"
+              onClick={(e) => {
+                projectOpener.current = e.currentTarget;
+                handoff.current = false;
+                setSelected(item);
+              }}
+              key={item.id}
+            >
+              <div className="image-crop">
+                <Photo name={item.image} alt={item.title} />
+                <span className="project-open">
+                  <Arrow diagonal />
+                </span>
+              </div>
+              <div className="project-caption">
+                <h2>{item.title}</h2>
+                <span>{item.type}</span>
+              </div>
+            </button>
+          ))}
         </div>
       </section>
       <section className="beforeafter-section wrap">
-        <h2>Побачити зміни.</h2>
-        <p>Від підготовленої основи до продуманого інтер’єру.</p>
+        <h2>{p.changeTitle}</h2>
+        <p>{p.changeText}</p>
         <BeforeAfter />
       </section>
       <ContactBand />
@@ -1254,7 +1264,7 @@ export function Portfolio() {
               }
             }}
           >
-            <Dialog.Close className="close-control" aria-label="Закрити проєкт">
+            <Dialog.Close className="close-control" aria-label={p.closeProject}>
               <Close />
             </Dialog.Close>
             {selected && (
@@ -1266,7 +1276,10 @@ export function Portfolio() {
                   sizes="(max-width: 1200px) 90vw, 1080px"
                 />
                 <div className="project-dialog-text">
-                  <span>{selected.type} / ВІЗУАЛІЗАЦІЯ</span>
+                  <span>
+                    {selected.type}
+                    {" / " + p.visualisation}
+                  </span>
                   <Dialog.Title>{selected.title}</Dialog.Title>
                   <Dialog.Description>{selected.text}</Dialog.Description>
                   <ConsultationButton
@@ -1277,7 +1290,7 @@ export function Portfolio() {
                       handoff.current = true;
                       setSelected(null);
                     }}
-                    children="Обговорити ваш проєкт"
+                    children={p.discuss}
                   />
                 </div>
               </>
@@ -1289,59 +1302,45 @@ export function Portfolio() {
   );
 }
 export function About() {
+  const { tx } = useI18n();
+  const a = tx.about;
   return (
     <>
       <div className="page-title wrap">
-        <Breadcrumb current="Про компанію" />
+        <Breadcrumb current={tx.common.about} />
         <h1>
-          Міцна основа.
+          {a.title[0]}
           <br />
-          <span>Від 2006 року.</span>
+          <span>{a.title[1]}</span>
         </h1>
-        <p>ТОВ БК Слава. Будівельні та ремонтні роботи у Києві й Київській області.</p>
+        <p>{a.text}</p>
       </div>
       <section className="about-identity wrap">
         <div className="about-logo">
           <img
             src={withBase("/assets/logo-720.webp")}
-            alt="Оригінальний логотип ТОВ БК Слава"
+            alt={a.logoAlt}
             width="720"
             height="720"
             loading="lazy"
           />
         </div>
         <div>
-          <h2>Досвід у кожному рішенні.</h2>
-          <p>
-            Компанія працює з 2006 року. Для нас ремонт починається з розуміння об’єкта: його стану,
-            призначення та ваших очікувань.
-          </p>
-          <p>
-            Поєднуємо окремі роботи в послідовний процес. Від демонтажу й підготовки до конструкцій,
-            інженерії та фінішного оздоблення.
-          </p>
-          <p>
-            Можна звернутися з комплексним ремонтом або конкретним завданням. Разом визначимо, що
-            потрібно саме вашому приміщенню.
-          </p>
+          <h2>{a.heading}</h2>
+          <p>{a.p1}</p>
+          <p>{a.p2}</p>
+          <p>{a.p3}</p>
           <span className="about-since">
-            З 2006 <small>КИЇВ ТА ОБЛАСТЬ</small>
+            {a.since} <small>{a.sinceSmall}</small>
           </span>
         </div>
       </section>
       <section className="values wrap">
         <h2>
-          Увага до того,
-          <br />
-          що має значення.
+          <Lines lines={a.valuesTitle} />
         </h2>
         <div>
-          {[
-            ["Ясність домовленостей", "Обговорюємо склад робіт і важливі рішення до їх виконання."],
-            ["Логіка етапів", "Плануємо процес так, щоб зберігати якість уже виконаного."],
-            ["Увага до основи", "Підготовка, монтаж і приховані роботи визначають якість фінішу."],
-            ["Акуратні деталі", "Примикання, кути та стики формують цілісний вигляд простору."],
-          ].map(([t, p]) => (
+          {a.values.map(([t, p]) => (
             <article key={t}>
               <h3>{t}</h3>
               <p>{p}</p>
@@ -1356,38 +1355,35 @@ export function About() {
   );
 }
 export function Contacts() {
+  const { tx } = useI18n();
+  const c = tx.contactsPage;
   return (
     <>
       <div className="page-title wrap">
-        <Breadcrumb current="Контакти" />
+        <Breadcrumb current={tx.common.contacts} />
         <h1>
-          Хороший ремонт
+          {c.title[0]}
           <br />
-          <span>починається з розмови.</span>
+          <span>{c.title[1]}</span>
         </h1>
-        <p>Київ та Київська область. Обговоримо ваш об’єкт, потрібні роботи й наступний крок.</p>
+        <p>{c.text}</p>
       </div>
       <section className="contacts-layout wrap">
         <div className="contacts-primary">
-          <span>ЗАТЕЛЕФОНУЙТЕ НАМ</span>
+          <span>{c.call}</span>
           <a href="tel:+380676090075">{phone}</a>
-          <span>АБО НАПИШІТЬ</span>
+          <span>{c.write}</span>
           <a className="contact-email" href="mailto:m98720141@gmail.com">
             m98720141@gmail.com
           </a>
           <ContactMethods large />
         </div>
         <div className="contact-invitation">
-          <Photo
-            name="material"
-            alt="Архітектурні деталі з металу, скла та мінеральних поверхонь"
-          />
+          <Photo name="material" alt={c.imageAlt} />
           <div>
-            <span>ТОВ БК СЛАВА</span>
+            <span>{tx.intro.caption}</span>
             <h2>
-              Ваші плани.
-              <br />
-              Наша увага.
+              <Lines lines={c.invitation} />
             </h2>
             <ConsultationButton className="invitation-consult" />
           </div>
@@ -1395,61 +1391,58 @@ export function Contacts() {
       </section>
       <section className="contact-preparation wrap">
         <h2>
-          Щоб розмова
-          <br />
-          була предметною.
+          <Lines lines={c.prepTitle} />
         </h2>
         <div>
-          <p>
-            Підготуйте короткий опис завдання: тип приміщення, населений пункт, поточний стан і
-            бажаний результат.
-          </p>
-          <p>
-            Якщо маєте план або фотографії об’єкта, їх можна передати під час спілкування у WhatsApp
-            або Viber.
-          </p>
-          <p>Терміни, обсяг і вартість визначаємо після знайомства із завданням.</p>
+          <p>{c.p1}</p>
+          <p>{c.p2}</p>
+          <p>{c.p3}</p>
         </div>
       </section>
     </>
   );
 }
 export function Privacy() {
+  const { tx } = useI18n();
+  const p = tx.privacyPage;
   return (
     <div className="legal-page wrap">
-      <Breadcrumb current="Приватність" />
-      <h1>Політика приватності</h1>
+      <Breadcrumb current={tx.common.privacy} />
+      <h1>{p.title}</h1>
       <p>
-        Контакт для питань щодо даних: <a href="mailto:m98720141@gmail.com">m98720141@gmail.com</a>.
-        Компанія: ТОВ БК Слава.
+        {p.contact} <a href="mailto:m98720141@gmail.com">m98720141@gmail.com</a>. {p.company}
       </p>
-      <h2>Форма консультації</h2>
-      <p>
-        У цій версії сайту форма готує звернення та зберігає його лише у sessionStorage вашого
-        браузера на час поточної сесії. Дані автоматично не надсилаються компанії. Ви можете
-        самостійно відправити підготовлений текст через свій поштовий застосунок.
-      </p>
-      <h2>Контактні дані</h2>
-      <p>
-        За вашим бажанням форма містить ім’я, номер телефону, населений пункт, обраний напрямок та
-        опис завдання. Не вказуйте у повідомленні конфіденційні дані, які не потрібні для
-        консультації.
-      </p>
-      <h2>Зовнішні сервіси</h2>
-      <p>
-        Посилання на WhatsApp, Viber і пошту відкривають відповідні сторонні сервіси. Подальша
-        обробка інформації відбувається згідно з їхніми політиками.
-      </p>
-      <h2>Локальне зберігання</h2>
-      <p>
-        Сайт також зберігає у поточній сесії позначку перегляду вступного відео. Аналітичні та
-        рекламні трекери не підключені. Закриття сесії браузера видаляє ці локальні дані.
-      </p>
-      <h2>Ваші звернення</h2>
-      <p>
-        Питання щодо повідомлень, які ви самостійно надіслали компанії, можна адресувати на вказану
-        пошту.
-      </p>
+      {p.sections.map(([heading, text]) => (
+        <Fragment key={heading}>
+          <h2>{heading}</h2>
+          <p>{text}</p>
+        </Fragment>
+      ))}
+    </div>
+  );
+}
+export function NotFoundPage() {
+  const { tx, href } = useI18n();
+  return (
+    <div className="error-page wrap">
+      <span>404</span>
+      <h1>{tx.notFound.title}</h1>
+      <p>{tx.notFound.text}</p>
+      <a href={href("/")}>
+        {tx.notFound.home} <Arrow diagonal />
+      </a>
+    </div>
+  );
+}
+export function ErrorPage() {
+  const { tx, href } = useI18n();
+  return (
+    <div className="error-page wrap">
+      <h1>{tx.notFound.errorTitle}</h1>
+      <p>{tx.notFound.errorText}</p>
+      <a href={href("/")}>
+        {tx.notFound.home} <Arrow diagonal />
+      </a>
     </div>
   );
 }

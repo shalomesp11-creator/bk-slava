@@ -1,3 +1,4 @@
+import { ui, type Lang } from "./text";
 export const phone = "+380 67 609 00 75";
 export const origin = import.meta.env.VITE_SITE_ORIGIN || "https://bk-slava.higgsfield.app";
 export const services = [
@@ -225,17 +226,32 @@ export const steps = [
   ["Виконання", "Рухаємось поетапно та узгоджуємо рішення, що впливають на результат."],
   ["Приймання", "Разом оглядаємо виконане й перевіряємо завершальні деталі."],
 ];
-export function pageHead(title: string, path: string, description: string, image = "og") {
-  const full = title + " | ТОВ БК Слава";
+export function pageHead(
+  title: string,
+  path: string,
+  description: string,
+  image = "og",
+  lang: Lang = "uk",
+) {
+  const meta = ui[lang].meta;
+  const full = title + " | " + meta.suffix;
+  const url = (l: Lang) => origin + (l === "en" ? "/en" + (path === "/" ? "/" : path) : path);
   return {
     meta: [
       { title: full },
       { name: "description", content: description },
       { property: "og:title", content: full },
       { property: "og:description", content: description },
-      { property: "og:url", content: origin + path },
+      { property: "og:url", content: url(lang) },
       { property: "og:image", content: origin + "/assets/" + image + ".webp" },
+      { property: "og:locale", content: meta.locale },
+      { property: "og:site_name", content: meta.suffix },
     ],
-    links: [{ rel: "canonical", href: origin + path }],
+    links: [
+      { rel: "canonical", href: url(lang) },
+      { rel: "alternate", hrefLang: "uk", href: url("uk") },
+      { rel: "alternate", hrefLang: "en", href: url("en") },
+      { rel: "alternate", hrefLang: "x-default", href: url("uk") },
+    ],
   };
 }
