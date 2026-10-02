@@ -13,7 +13,7 @@ import { services, projects, steps, phone, type Service } from "./content";
 import { base, withBase } from "./base";
 import { reviewDrafts } from "./review-drafts";
 
-function Arrow({ diagonal = false }: { diagonal?: boolean }) {
+export function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
@@ -150,7 +150,6 @@ function Brand() {
   );
 }
 function ContactMethods({ large = false }: { large?: boolean }) {
-  const [tg, setTg] = useState(false);
   return (
     <>
       <div className={"contact-methods " + (large ? "large" : "")}>
@@ -174,44 +173,22 @@ function ContactMethods({ large = false }: { large?: boolean }) {
           <span>Viber</span>
           <Arrow diagonal />
         </a>
-        <button aria-label="Telegram" onClick={() => setTg(true)}>
+        <a
+          aria-label="Telegram"
+          href="https://t.me/Alla_301175"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <ContactIcon kind="telegram" />
           <span>Telegram</span>
           <Arrow diagonal />
-        </button>
+        </a>
         <a aria-label="Email" href="mailto:m98720141@gmail.com">
           <ContactIcon kind="email" />
           <span>Email</span>
           <Arrow diagonal />
         </a>
       </div>
-      <Dialog.Root open={tg} onOpenChange={setTg}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="dialog-overlay" />
-          <Dialog.Content className="notice-dialog">
-            <Dialog.Close className="close-control" aria-label="Закрити">
-              <Close />
-            </Dialog.Close>
-            <ContactIcon kind="telegram" />
-            <Dialog.Title>Зв’язок у Telegram</Dialog.Title>
-            <Dialog.Description>
-              Контакт компанії в Telegram ще уточнюється. Зараз зручно обговорити ваш об’єкт
-              телефоном або у WhatsApp.
-            </Dialog.Description>
-            <a className="notice-phone" href="tel:+380676090075">
-              {phone}
-            </a>
-            <a
-              className="text-link"
-              href="https://wa.me/380676090075"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Написати у WhatsApp <Arrow diagonal />
-            </a>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
     </>
   );
 }
@@ -685,7 +662,7 @@ export function Home() {
             2006<span className="year-dot">.</span>
           </strong>
           <span className="year-baseline">
-            ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <i>↗</i>
+            ВІДТОДІ БУДУЄМО ВАШ ПРОСТІР <Arrow diagonal />
           </span>
         </div>
         <div>

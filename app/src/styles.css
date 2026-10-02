@@ -1003,7 +1003,9 @@ main:focus {
   margin: 20px 0;
 }
 .error-page > a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   padding: 20px;
   border-bottom: 1px solid var(--forest);
 }
@@ -1216,7 +1218,11 @@ main:focus {
   font-size: 13px;
 }
 .mobile-menu > a {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   font-size: 20px;
+  white-space: nowrap;
 }
 .intro {
   position: fixed;
@@ -2128,9 +2134,10 @@ p {
   justify-content: space-between;
   align-items: center;
 }
-.year-baseline i {
-  font-style: normal;
-  font-size: 23px;
+.year-baseline svg {
+  flex: none;
+  width: 23px;
+  height: 23px;
   color: var(--emerald);
 }
 .year-section > div:last-child {
@@ -3120,6 +3127,9 @@ p {
   }
 }
 .mobile-menu .menu-consult {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
   background: var(--paper);
   color: var(--forest);
   margin-block: 25px;

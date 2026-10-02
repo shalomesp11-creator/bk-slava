@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import { SiteShell } from "../slava/site";
+import { Arrow, SiteShell } from "../slava/site";
 import appCss from "../styles.css?url";
 import appMeta from "../app-meta.json";
 import { origin } from "../slava/content";
@@ -42,14 +42,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       <span>404</span>
       <h1>Тут ще немає простору.</h1>
       <p>Сторінку не знайдено. Поверніться до головної, щоб продовжити.</p>
-      <a href={withBase("/")}>На головну ↗</a>
+      <a href={withBase("/")}>На головну <Arrow diagonal />
+      </a>
     </div>
   ),
   errorComponent: () => (
     <div className="error-page wrap">
       <h1>Сторінка не завантажилась.</h1>
       <p>Спробуйте оновити її або повернутися на головну.</p>
-      <a href={withBase("/")}>На головну ↗</a>
+      <a href={withBase("/")}>На головну <Arrow diagonal />
+      </a>
     </div>
   ),
 });
