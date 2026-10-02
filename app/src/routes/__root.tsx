@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: appMeta.og_title },
       { name: "description", content: appMeta.og_description },
-      { name: "theme-color", content: "#123c27" },
+      { name: "theme-color", content: "#063b0c" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "uk_UA" },
       { property: "og:site_name", content: "ТОВ БК Слава" },

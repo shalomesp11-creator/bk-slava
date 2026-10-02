@@ -17,6 +17,7 @@ import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PoslugyIndexRouteImport } from './routes/poslugy.index'
+import { Route as PoslugyZagalnobudivelniRobotyRouteImport } from './routes/poslugy.zagalnobudivelni-roboty'
 import { Route as PoslugySteliRouteImport } from './routes/poslugy.steli'
 import { Route as PoslugySantehnikaElektrykaRouteImport } from './routes/poslugy.santehnika-elektryka'
 import { Route as PoslugyRemontPidKlyuchRouteImport } from './routes/poslugy.remont-pid-klyuch'
@@ -64,6 +65,12 @@ const PoslugyIndexRoute = PoslugyIndexRouteImport.update({
   path: '/poslugy/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PoslugyZagalnobudivelniRobotyRoute =
+  PoslugyZagalnobudivelniRobotyRouteImport.update({
+    id: '/poslugy/zagalnobudivelni-roboty',
+    path: '/poslugy/zagalnobudivelni-roboty',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PoslugySteliRoute = PoslugySteliRouteImport.update({
   id: '/poslugy/steli',
   path: '/poslugy/steli',
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
   '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
   '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy/zagalnobudivelni-roboty': typeof PoslugyZagalnobudivelniRobotyRoute
   '/poslugy/': typeof PoslugyIndexRoute
 }
 export interface FileRoutesByTo {
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
   '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
   '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy/zagalnobudivelni-roboty': typeof PoslugyZagalnobudivelniRobotyRoute
   '/poslugy': typeof PoslugyIndexRoute
 }
 export interface FileRoutesById {
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/poslugy/remont-pid-klyuch': typeof PoslugyRemontPidKlyuchRoute
   '/poslugy/santehnika-elektryka': typeof PoslugySantehnikaElektrykaRoute
   '/poslugy/steli': typeof PoslugySteliRoute
+  '/poslugy/zagalnobudivelni-roboty': typeof PoslugyZagalnobudivelniRobotyRoute
   '/poslugy/': typeof PoslugyIndexRoute
 }
 export interface FileRouteTypes {
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/poslugy/remont-pid-klyuch'
     | '/poslugy/santehnika-elektryka'
     | '/poslugy/steli'
+    | '/poslugy/zagalnobudivelni-roboty'
     | '/poslugy/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/poslugy/remont-pid-klyuch'
     | '/poslugy/santehnika-elektryka'
     | '/poslugy/steli'
+    | '/poslugy/zagalnobudivelni-roboty'
     | '/poslugy'
   id:
     | '__root__'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
     | '/poslugy/remont-pid-klyuch'
     | '/poslugy/santehnika-elektryka'
     | '/poslugy/steli'
+    | '/poslugy/zagalnobudivelni-roboty'
     | '/poslugy/'
   fileRoutesById: FileRoutesById
 }
@@ -210,6 +223,7 @@ export interface RootRouteChildren {
   PoslugyRemontPidKlyuchRoute: typeof PoslugyRemontPidKlyuchRoute
   PoslugySantehnikaElektrykaRoute: typeof PoslugySantehnikaElektrykaRoute
   PoslugySteliRoute: typeof PoslugySteliRoute
+  PoslugyZagalnobudivelniRobotyRoute: typeof PoslugyZagalnobudivelniRobotyRoute
   PoslugyIndexRoute: typeof PoslugyIndexRoute
 }
 
@@ -271,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PoslugyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/poslugy/zagalnobudivelni-roboty': {
+      id: '/poslugy/zagalnobudivelni-roboty'
+      path: '/poslugy/zagalnobudivelni-roboty'
+      fullPath: '/poslugy/zagalnobudivelni-roboty'
+      preLoaderRoute: typeof PoslugyZagalnobudivelniRobotyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/poslugy/steli': {
       id: '/poslugy/steli'
       path: '/poslugy/steli'
@@ -330,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   PoslugyRemontPidKlyuchRoute: PoslugyRemontPidKlyuchRoute,
   PoslugySantehnikaElektrykaRoute: PoslugySantehnikaElektrykaRoute,
   PoslugySteliRoute: PoslugySteliRoute,
+  PoslugyZagalnobudivelniRobotyRoute: PoslugyZagalnobudivelniRobotyRoute,
   PoslugyIndexRoute: PoslugyIndexRoute,
 }
 export const routeTree = rootRouteImport

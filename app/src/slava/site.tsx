@@ -978,7 +978,7 @@ export function ServicePage({ service: s }: { service: Service }) {
   const next = services[(index + 1) % services.length];
   return (
     <>
-      <div className="page-title service-title wrap">
+      <div className={`page-title service-title wrap service-${s.slug}`}>
         <Breadcrumb current={s.name} service />
         <div className="service-title-grid">
           <div>

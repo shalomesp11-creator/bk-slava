@@ -21,6 +21,7 @@ const routes = [
   "/poslugy/demontazh",
   "/poslugy/santehnika-elektryka",
   "/poslugy/steli",
+  "/poslugy/zagalnobudivelni-roboty",
   "/portfolio",
   "/pro-kompaniyu",
   "/kontakty",

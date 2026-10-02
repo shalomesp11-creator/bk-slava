@@ -332,7 +332,7 @@ main:focus {
 }
 .row-arrow {
   margin-left: auto;
-  color: var(--forest);
+  color: var(--emerald);
   transition: transform 0.2s;
 }
 .service-rows > a:hover,
@@ -600,7 +600,7 @@ main:focus {
   left: 0;
   top: 38px;
   font-size: 10px;
-  color: var(--muted);
+  color: var(--emerald);
 }
 .scope-grid h3 {
   font-size: 26px;
@@ -612,7 +612,7 @@ main:focus {
 }
 .service-result {
   padding: 75px 0;
-  background: #e3eadf;
+  background: #dcefd5;
 }
 .service-result span {
   font-size: 9px;
@@ -1874,10 +1874,11 @@ button:active {
 
 /* BK Slava — architectural design system, October 2026 */
 :root {
-  --forest: #123c27;
-  --emerald: #24603b;
-  --green: #75b765;
-  --mint: #c6dfb9;
+  --forest: #063b0c;
+  --emerald: #08751b;
+  --green: #35c52c;
+  --mint: #c4efb9;
+  --green-hover: #095b15;
   --paper: #f5f5ef;
   --ink: #20382b;
   --muted: #59675c;
@@ -1913,7 +1914,7 @@ p {
   color: var(--muted);
 }
 .accent-dot {
-  color: #56824c;
+  color: var(--emerald);
 }
 .site-header {
   height: 96px;
@@ -1967,7 +1968,7 @@ p {
   padding: 17px 24px;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  background: var(--forest);
+  background: var(--emerald);
   color: #f6f7f1;
   font-size: 13px;
   font-weight: 550;
@@ -1983,12 +1984,13 @@ p {
 .button-primary:hover,
 .form-submit:hover,
 .email-draft:hover {
-  background: var(--emerald);
+  background: var(--green-hover);
   transform: translateY(-2px);
 }
 .button-primary:active,
 .form-submit:active,
 .email-draft:active {
+  background: var(--forest);
   transform: translateY(1px);
 }
 .button-primary svg,
@@ -2118,7 +2120,7 @@ p {
   display: inline;
   font-size: inherit;
   margin: 0;
-  color: #76a066;
+  color: var(--green);
   letter-spacing: inherit;
 }
 .year-baseline {
@@ -2129,7 +2131,7 @@ p {
 .year-baseline i {
   font-style: normal;
   font-size: 23px;
-  color: #6b8c5e;
+  color: var(--emerald);
 }
 .year-section > div:last-child {
   border: 0;
@@ -2197,10 +2199,10 @@ p {
 .service-rows > a.active {
   color: var(--forest);
   padding-left: 10px;
-  background: linear-gradient(90deg, #e5ecde, transparent);
+  background: linear-gradient(90deg, #dcefd5, transparent);
 }
 .service-rows > a.active .row-arrow {
-  background: var(--forest);
+  background: var(--emerald);
   color: white;
   border-color: var(--forest);
 }
@@ -2391,8 +2393,8 @@ p {
   transition: background 0.2s;
 }
 .portfolio-filters button.selected {
-  background: var(--forest);
-  border-color: var(--forest);
+  background: var(--emerald);
+  border-color: var(--emerald);
   color: white;
 }
 .portfolio-filters button:hover:not(.selected) {
@@ -2513,6 +2515,13 @@ p {
 }
 .service-title h1 {
   font-size: clamp(38px, 4.8vw, 66px);
+}
+.service-zagalnobudivelni-roboty h1,
+.service-rows a[href$="/zagalnobudivelni-roboty"] h3,
+.service-preview:has(a[href$="/zagalnobudivelni-roboty"]) h3,
+.next-service[href$="/zagalnobudivelni-roboty"] h3 {
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 .service-title-grid {
   gap: 60px;
