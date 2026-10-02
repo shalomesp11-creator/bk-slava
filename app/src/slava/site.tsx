@@ -410,7 +410,73 @@ function Consultation({
     </Dialog.Root>
   );
 }
+const imageRetries = new WeakMap<HTMLImageElement, number>();
+function reloadImage(img: HTMLImageElement) {
+  const attempt = (imageRetries.get(img) ?? 0) + 1;
+  if (attempt > 3) return;
+  imageRetries.set(img, attempt);
+  const src = img.getAttribute("src");
+  const srcset = img.getAttribute("srcset");
+  // WebKit keeps a failed request cached for the lifetime of the document, so retry on a fresh URL.
+  const bust = (url: string) => url.replace(/[?&]r=\d+$/, "") + "?r=" + attempt;
+  img.removeAttribute("srcset");
+  img.removeAttribute("src");
+  requestAnimationFrame(() => {
+    img.loading = "eager";
+    if (srcset) {
+      img.setAttribute(
+        "srcset",
+        srcset
+          .split(",")
+          .map((part) => {
+            const [url, size] = part.trim().split(/\s+/);
+            return bust(url) + (size ? " " + size : "");
+          })
+          .join(", "),
+      );
+    }
+    if (src) img.setAttribute("src", bust(src));
+  });
+}
+// Mobile browsers can restore a page (back button / bfcache) with images whose request was cut
+// off by the navigation. Re-request every image that ended up broken instead of leaving a hole.
+function useImageRecovery() {
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const heal = () => {
+      document.querySelectorAll("img").forEach((img) => {
+        if (!img.getAttribute("src") && !img.getAttribute("srcset")) return;
+        if (img.complete && img.naturalWidth === 0) reloadImage(img);
+      });
+    };
+    const schedule = (delay = 150) => {
+      clearTimeout(timer);
+      timer = setTimeout(heal, delay);
+    };
+    const onPageShow = () => {
+      for (const delay of [100, 1200]) setTimeout(heal, delay);
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") schedule();
+    };
+    const onError = (e: Event) => {
+      if (e.target instanceof HTMLImageElement) schedule(600);
+    };
+    schedule(400);
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("online", () => schedule());
+    document.addEventListener("visibilitychange", onVisible);
+    document.addEventListener("error", onError, true);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("pageshow", onPageShow);
+      document.removeEventListener("visibilitychange", onVisible);
+      document.removeEventListener("error", onError, true);
+    };
+  }, []);
+}
 export function SiteShell({ children }: { children: ReactNode }) {
+  useImageRecovery();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const opener = useRef<HTMLElement | null>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
@@ -814,7 +880,16 @@ function ServicesDirectory({ full = false }: { full?: boolean }) {
           ))}
         </div>
         <div className="service-preview">
-          <Photo name={services[active].image} alt={services[active].name} />
+          <div className="preview-media">
+            {services.map((s, i) => (
+              <Photo
+                key={s.slug}
+                name={s.image}
+                alt={active === i ? s.name : ""}
+                className={active === i ? "active" : ""}
+              />
+            ))}
+          </div>
           <div className="preview-description">
             <span>0{active + 1} / НАПРЯМОК РОБІТ</span>
             <h3>{services[active].name}</h3>

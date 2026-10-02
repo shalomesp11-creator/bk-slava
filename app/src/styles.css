@@ -2226,6 +2226,19 @@ p {
   aspect-ratio: 16/10;
   object-fit: cover;
 }
+.preview-media {
+  display: grid;
+  min-height: 0;
+}
+.preview-media > img {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+}
+.preview-media > img.active {
+  opacity: 1;
+  visibility: visible;
+}
 .preview-description {
   padding: 28px 30px 25px;
 }
